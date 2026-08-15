@@ -1085,8 +1085,8 @@ SlideCard(
                         bullets: [
                             "0:00–0:15  Homework five. Quick grouping recap.",
                             "0:15–0:40  Mixed 5-problem number-systems drill (do now slide). Grade together.",
-                            "0:40–0:55  input().strip().split() — tokens, index 0 and 1.",
-                            "0:55–1:25  Lab: type the full conversion program. Run 2F 16 → 47, 77 8 → 63, 1011 2 → 11.",
+                            "0:40–0:55  Slow Python ears: input, text vs int, strip, split, cup 0 and cup 1. Do nows. Do not chain yet.",
+                            "0:55–1:25  Lab: input() echo, then two-cup convert. Full program only if cups are solid.",
                             "1:25–1:30  Week 4 homework. Checkpoint: we want 8/10 paper next week."
                         ],
                         diagram: "Checkpoint tonight:\\n  drill 5 in class\\n  program prints 47 for 2F 16\\n  no prompt text in input()",
@@ -1117,20 +1117,126 @@ SlideCard(
                         diagram: "12310 = 7B16   both ascending\n13210 = 8416   decimal not ascending\nWiki count in 100..200: 13",
                         coachNote: "Do 123 and 189 as a class. The full list is optional stretch, not Week 3 required."
                     ),
+                                        SlideCard(
+                        title: "Python recap before the grader — what we already know",
+                        bullets: [
+                            "Week 1: print() talks. Quotes make text. n = 7 puts a number in a box named n.",
+                            "Week 2: int('7') turns the TEXT seven into the NUMBER seven. int('1A', 16) does a base conversion.",
+                            "You have not yet made a program that LISTENS. So far you typed the number inside the file. The contest computer types the number FOR you, after you press Run.",
+                            "The next slides add one tiny skill at a time: listen, peel Enter, chop on spaces, name the pieces. We will not chain them until each piece is boring.",
+                            "If print and int still feel mushy, stop and redo the 6-line program. Do not open input() yet."
+                        ],
+                        diagram: "Already know:\n  print(3+4)           → 7\n  n = 10\n  print(int('1A', 16)) → 26\n\nNot yet:\n  a line that arrives FROM OUTSIDE the file",
+                        coachNote: "Hold up the 6-line program. ‘Tonight we add ears. Same mouth (print).’"
+                    ),
                     SlideCard(
+                        title: "Python: input() — the program waits for one line",
+                        bullets: [
+                            "input() means: pause. Wait for a line of typing. When Enter is pressed, give me that line as TEXT.",
+                            "On your laptop, YOU type the line. On ACSL HackerRank, a hidden robot types it. Same function.",
+                            "Always save it in a box: line = input()",
+                            "Then you may print it back to see it: print(line). That is a practice trick. The real contest program will not echo the line — it will compute and print only the answer.",
+                            "Do not write input('Enter a number:'). Those extra words get mixed into the robot’s output and the hidden tests fail."
+                        ],
+                        diagram: "line = input()\nprint(line)\n\nIf you type:  hello\nYou see:     hello\n\nIf you type:  1A 16\nYou see:     1A 16\n\n# Never:\n# input('Type here: ')   extra words fail ACSL",
+                        coachNote: "Run this live. Type 1A 16. Celebrate that the program waited. That is the whole slide."
+                    ),
+                    SlideCard(
+                        title: "Python: input() always gives TEXT, even if it looks like a number",
+                        bullets: [
+                            "If the person types 7, input() gives the TEXT '7', not the number 7. Same trap as Week 1 quotes.",
+                            "Text cannot do math the way you want: '7' + '1' is 71 (glued). You need int(line) to get 8 from 7+1.",
+                            "Worked: line = input()   (they type 7)   n = int(line)   print(n + 1)  → 8.",
+                            "If they type 1A, int(line) crashes — 1A is not a decimal number. Hex still needs int(line, 16).",
+                            "Habit: the moment you need math, wrap int(…)."
+                        ],
+                        diagram: "line = input()        # they type 7\nprint(line + '1')     # 71   glued text. Wrong for math.\nprint(int(line) + 1)  # 8    numbers. Right.\n\n# Hex later:\n# int('1A', 16) → 26",
+                        coachNote: "Type 7 live. Show 71 vs 8. Same Week 1 joke, now with input()."
+                    ),
+                    SlideCard(
+                        title: "Do now · input() is text (2 min)",
+                        bullets: [
+                            "Predict, then we run it.",
+                            "Q1. line = input()  (you type 10). print(line + line). What appears?",
+                            "Q2. Same typing. print(int(line) + int(line)). What appears?",
+                            "Q3. Why is input('Enter:') dangerous on ACSL?"
+                        ],
+                        diagram: "Q1  1010   (text glued)\nQ2  20     (math)\nQ3  the word Enter: gets printed and hidden tests fail",
+                        coachNote: "Cover the box. If Q1 is 20, they skipped the text lesson."
+                    ),
+                    SlideCard(
+                        title: "Python: strip() — peel the leftover Enter and spaces",
+                        bullets: [
+                            "When you press Enter, a hidden ‘end of line’ character rides along. Sometimes extra spaces do too.",
+                            ".strip() peels spaces and Enter from BOTH ends. It does not change letters in the middle.",
+                            "Always: line = input().strip()   not bare input() for contest work.",
+                            "'  7  '.strip() is '7'.  Then int(line) works. Without strip, some graders still pass — until a hidden test has a space and yours fails.",
+                            "Say it: ‘strip the edges, keep the middle.’"
+                        ],
+                        diagram: "line = input().strip()\n\nTyped:   [space] 7 [space] [Enter]\nAfter strip:  '7'\nint(line) + 1  →  8\n\n'  1A 16  '.strip()  →  '1A 16'\n(the space BETWEEN 1A and 16 stays — we want that)",
+                        coachNote: "Show a sticky note with spaces drawn on both ends. Tear them off. Middle stays."
+                    ),
+                    SlideCard(
+                        title: "Python: split() — chop one line into a row of pieces",
+                        bullets: [
+                            "Contest lines often have TWO things: a numeral and a base, with a space: 1A 16",
+                            ".split() with empty parentheses chops on any run of spaces. You get a ROW of pieces, called a list.",
+                            "'1A 16'.split() → two pieces: 1A  and  16.",
+                            "A list is a numbered row of boxes. The first box is number 0. The second is number 1. (Computers start counting at 0.)",
+                            "We are not looping yet. We only pick box 0 and box 1 by hand."
+                        ],
+                        diagram: "line = '1A 16'\npieces = line.split()\n\n  box 0     box 1\n  '1A'      '16'\n\npieces[0]  is  '1A'    the numeral (still text)\npieces[1]  is  '16'    the base (still text!)",
+                        coachNote: "Two paper cups labeled 0 and 1. Drop '1A' in 0, '16' in 1. Say pieces-sub-zero."
+                    ),
+                    SlideCard(
+                        title: "Python: pieces[0] and pieces[1] — pick a cup, then int() if it is math",
+                        bullets: [
+                            "pieces[0] is the first word. pieces[1] is the second. Square brackets mean ‘which cup.’",
+                            "Both cups still hold TEXT. The base 16 is the text '16' until int(pieces[1]).",
+                            "The numeral '1A' stays text because int() needs that string PLUS the base: int(pieces[0], int(pieces[1])).",
+                            "Chant: first cup numeral, second cup base, int the base, then int(numeral, base).",
+                            "If there is only one number on the line, there is no cup 1. That is a different problem shape — later."
+                        ],
+                        diagram: "pieces = '1A 16'.split()\nnumeral = pieces[0]           # '1A'\nbase = int(pieces[1])         # 16  (now a number)\nprint(int(numeral, base))     # 26\n\n# Cups:\n#  0: 1A     1: 16",
+                        coachNote: "Finger on [0] then [1]. Mix-up of cups is the #1 Week 4 bug."
+                    ),
+                    SlideCard(
+                        title: "Do now · two cups (2 min)",
+                        bullets: [
+                            "line = '77 8'. pieces = line.split()",
+                            "Q1. What is in pieces[0]? (quotes if it is text)",
+                            "Q2. What is int(pieces[1])?",
+                            "Q3. What does print(int(pieces[0], int(pieces[1]))) show?"
+                        ],
+                        diagram: "Q1  '77'\nQ2  8\nQ3  63     because 7×8+7=63",
+                        coachNote: "If Q3 is 778 they glued text. Redo int()."
+                    ),
+SlideCard(
                         title: "Python: input().strip().split() — how the grader talks to your program",
                         bullets: [
-                            "On HackerRank / ACSL programming, a hidden robot types a line, then your program must answer.",
-                            "input() reads one line as text, including the Enter at the end.",
-                            ".strip() peels off leftover spaces and the Enter. Always strip.",
-                            ".split() chops the line on spaces into a LIST (a row of pieces).",
-                            "'1A 16'.split() → ['1A', '16']. Piece 0 is the numeral. Piece 1 is the base as text.",
-                            "You still must int() the pieces that are supposed to be numbers: int(parts[1]) is 16, not '16'."
+                            "Now we SNAP the pieces together. You already met input, strip, split, and cups 0 and 1. This is the same story on four lines.",
+                            "line = input().strip()     listen and peel Enter.",
+                            "parts = line.split()       two cups.",
+                            "print(int(parts[0], int(parts[1])))     convert and speak only the answer.",
+                            "The hidden robot types 1A 16. Your program prints 26 and stops. No hello, no ‘the answer is’.",
+                            "Name the list parts or pieces — either is fine. Do not skip strip."
                         ],
                         diagram: "Typed by the grader (you never see a person):\n1A 16\n\nline = input().strip()     # '1A 16'\nparts = line.split()       # ['1A', '16']\nnumeral = parts[0]         # '1A'\nbase = int(parts[1])       # 16\nprint(int(numeral, base))  # 26\n\n# NEVER:\n# input('Enter a number:')  ← extra words fail hidden tests",
                         coachNote: "Walk index 0 and 1 with fingers. Middle schoolers mix up which piece is the base. Chant: ‘first token numeral, second token base.’"
                     ),
-                    SlideCard(
+                                        SlideCard(
+                        title: "Python: first conversion program — four lines, no import yet",
+                        bullets: [
+                            "Type this together. No def, no import sys, no if __name__. Those come after this works.",
+                            "Run it. When it waits, type 2F 16 and Enter. You want 47.",
+                            "Run again. Type 77 8. You want 63. Type 1011 2. You want 11.",
+                            "If you see 2F16 glued, split did not run. If you see an error on 2F, you called int(parts[0]) without the base.",
+                            "When these three samples work, you have the contest skill. The next slide is the same idea dressed up for HackerRank files."
+                        ],
+                        diagram: "line = input().strip()\nparts = line.split()\nnumeral = parts[0]\nbase = int(parts[1])\nprint(int(numeral, base))\n\n# type 2F 16  →  47\n# type 77 8   →  63\n# type 1011 2 →  11",
+                        coachNote: "Do not open import sys until 47 appears. One victory, then the fancy file."
+                    ),
+SlideCard(
                         title: "Python: a complete Contest 1 conversion program (type this)",
                         bullets: [
                             "This is a full solution shape: read tokens, convert, print one integer, stop.",
