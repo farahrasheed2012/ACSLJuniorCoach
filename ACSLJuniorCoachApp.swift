@@ -265,7 +265,7 @@ private struct CoachDashboardView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("ACSL Junior Division · Season Tracker")
                 .font(.system(size: 28 * scale, weight: .bold, design: .rounded))
-            Text("Each round is 10 points: 5 Short-Answer + 5 Programming (hidden HackerRank cases). Season max 40. Finals qualification threshold is 24.")
+            Text("Each contest: 6 short-answer questions (2 per topic, 5 points total) plus one 72-hour HackerRank program (5 points). Season max 40. Finals bar 24.")
                 .font(.system(size: 14 * scale))
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -295,12 +295,12 @@ private struct CoachDashboardView: View {
             VStack(alignment: .leading, spacing: 6) {
                 weekRow("1", "Aug 17", "First Python: print, strings, variables, errors")
                 weekRow("2", "Aug 24", "Place value and four bases; int() / int(s, base)")
-                weekRow("3", "Aug 31", "To binary/hex/octal; grouping; adding in a base")
+                weekRow("3", "Aug 31", "Remainders, grouping, add/sub/mul, fractions")
                 weekRow("4", "Sep 7", "split(); conversion program; numbers checkpoint")
                 weekRow("5", "Sep 14", "Recursion tables; def f(n); return vs print")
-                weekRow("6", "Sep 21", "Harder recursion: second rule, even/odd, two-arg grid")
+                weekRow("6", "Sep 21", "Harder recursion: negatives, two-arg, pictures")
                 weekRow("7", "Sep 28", "If/elif/else on paper and in Python")
-                weekRow("8", "Oct 5", "Mock short-answer + hidden-test hygiene; contest checklist")
+                weekRow("8", "Oct 5", "Mock 6 short-answer + 72-hour programming checklist")
             }
         }
         .padding(14)
@@ -324,8 +324,8 @@ private struct CoachDashboardView: View {
 
     private var officialMatrix: some View {
         HStack(spacing: 12) {
-            MetricTile(title: "Short-Answer", value: "5 pts", detail: "per contest")
-            MetricTile(title: "Programming", value: "5 pts", detail: "hidden tests")
+            MetricTile(title: "Short-Answer", value: "6 Qs / 5 pts", detail: "2 per topic")
+            MetricTile(title: "Programming", value: "5 pts", detail: "72-hour HR")
             MetricTile(title: "Round max", value: "10", detail: "theory + code")
             MetricTile(title: "Season max", value: "40", detail: "4 contests")
             MetricTile(title: "Finals bar", value: "24", detail: "qualification")
@@ -498,11 +498,11 @@ private enum ContestCurriculum {
                             "Skill 1: Number systems. Same idea as hundreds-tens-ones, but the ‘bundle size’ can be 2, 8, 10, or 16 instead of 10.",
                             "Skill 2: Recursion. A recipe that says ‘use a smaller version of me’ until a stopping rule.",
                             "Skill 3: Branch tracing. Follow an if/else program like a choose-your-own-adventure. Never skip lines. Never guess.",
-                            "You will also write a short Python program. The computer types the input for you. You must print only the answer.",
+                            "You will also write one Python program on HackerRank. You get about 72 hours after the short-answer. Hidden tests grade exact print output.",
                             "We meet once a week for 1.5 hours, plus about 1 hour of homework. Eight weeks, starting Monday August 17.",
                             "Goal today: convert a number on paper AND in Python, fill a recursion table AND write def f(n), trace an if-program AND run it."
                         ],
-                        diagram: "Short-answer: 5 questions  (about 1 point each)   max 5\nProgramming: hidden tests                        max 5\nTogether this contest:                            max 10",
+                        diagram: "Short-answer paper: 6 questions, 2 from EACH topic\n  (number systems, recursion, branching)     5 pts\nProgramming: 1 HackerRank problem, ~72 hours  5 pts\nTogether this contest:                         10 pts",
                         coachNote: "Say this slowly: we are not learning ‘all of computer science.’ We are learning three contest tricks. Write NUMBER SYSTEMS / RECURSION / IF-ELSE on the board and leave them up."
                     ),
                     SlideCard(
@@ -788,6 +788,42 @@ private enum ContestCurriculum {
                         coachNote: "Do one with the class on graph paper boxes. If someone pads on the right, show that 1011 vs 10110 are different numbers."
                     ),
                     SlideCard(
+                        title: "Contest shape: hex → octal in one shot (via binary)",
+                        bullets: [
+                            "ACSL often asks: convert a hex number to octal. Do not go hex→decimal→octal unless the number is tiny. Use binary as the bridge.",
+                            "Step 1: each hex digit → exactly 4 bits. 0=0000, 1=0001, … 9=1001, A=1010, B=1011, C=1100, D=1101, E=1110, F=1111.",
+                            "Step 2: glue the bits. Step 3: regroup into 3s from the RIGHT. Pad LEFT with 0s if needed. Step 4: each trio is one octal digit 0–7.",
+                            "Worked: 2F₁₆. 2=0010, F=1111 → 00101111. Groups of 3 from the right: 00 101 111 → 0 5 7 → 57₈. Drop a leading 0 if ACSL wants 57₈ not 057₈.",
+                            "Worked: 1A₁₆. 1=0001, A=1010 → 00011010 → 000 110 10, pad left: 000 011 010 → 0 3 2 → 32₈. Check: 26₁₀ = 32₈."
+                        ],
+                        diagram: "2 F₁₆\n0010 1111\n  0 101 111     (groups of 3 from the right)\n  0   5   7  → 57₈\n\nCheck: 2F₁₆=47₁₀,  5×8+7=47. Yes.\n\nWrite the answer as 57 or 578 — match the contest blank. No 0o prefix.",
+                        coachNote: "This is a top-5 ACSL Junior 1 item. Do two more live: 3C₁₆ and B₁₆."
+                    ),
+                    SlideCard(
+                        title: "Contest shape: how many 1s in the binary of N?",
+                        bullets: [
+                            "Stem looks like: ‘How many 1’s are in the binary representation of 45?’ Convert, then COUNT the ones. Do not add the place values again.",
+                            "45₁₀ = 101101₂. Digits: 1,0,1,1,0,1. There are four 1s. Answer: 4.",
+                            "Shortcut: keep dividing by 2 and count how many remainders are 1. Same remainders as conversion.",
+                            "Python check: format(45,'b').count('1') → 4. bin(45).count('1') also works (the 0b prefix has no 1s that matter... wait 0b has no 1. Fine). Prefer format.",
+                            "Watch leading zeros: 00101101 still has four 1s. Padding does not add 1s."
+                        ],
+                        diagram: "45 → 101101₂ → four 1s → 4\n26 → 11010₂ → three 1s → 3\n15 → 1111₂ → four 1s → 4\n16 → 10000₂ → one 1 → 1\n\nPython:\nprint(format(45, 'b').count('1'))   # 4",
+                        coachNote: "Have Soha convert 45 on paper then count with a finger. Then run the one-liner."
+                    ),
+                    SlideCard(
+                        title: "How to write the short-answer (so the grader marks it)",
+                        bullets: [
+                            "Write only what the blank asks. No 0b, 0o, 0x prefixes. No Python quotes.",
+                            "Binary: 101101 not 0b101101. Octal: 57 not 0o57. Hex: 2D or 2d — if they printed hex on samples as 2D, use uppercase.",
+                            "If they ask ‘how many 1s’, the answer is a small decimal like 4, not the binary string.",
+                            "If they ask two things (e.g. rhombuses AND segments), write both in the order asked, often with a comma or ‘and’ — copy the sample’s style.",
+                            "Spaces: 4 3 as printed output vs 4,3. Match the problem. When in doubt, look at the sample output on programming; on short-answer, usually a single number."
+                        ],
+                        diagram: "Wanted          Write this       Not this\n47 decimal      47               47₁₀ or 0d47\n2D hex          2D               0x2d  or  '2D'\n57 octal        57               0o57\nfour 1-bits     4                101101\nprint 4 3       4 3              (4, 3)  or [4, 3]",
+                        coachNote: "Put this table on a sticky note in the pencil case for contest day."
+                    ),
+                    SlideCard(
                         title: "Adding like 2nd grade — but the ‘make a new bundle’ number changes",
                         bullets: [
                             "In base 10 you learned: 7+5=12, write 2, carry 1 ten. You carried because you hit 10.",
@@ -800,13 +836,62 @@ private enum ContestCurriculum {
                         coachNote: "Narrate in English: ‘F is fifteen, plus three is eighteen. Eighteen is one sixteen and two left over.’"
                     ),
                     SlideCard(
+                        title: "Subtracting in another base (borrow, don’t panic)",
+                        bullets: [
+                            "Same as 2nd-grade subtraction, but a ‘borrow’ brings one full bundle of the BASE, not 10.",
+                            "Binary: borrowing from the next column gives you 2 ones. 0−1 cannot; borrow, that 0 becomes 2, minus 1 is 1, and the next column drops by 1.",
+                            "Hex: borrow brings 16. Example: 20₁₆ − 1A₁₆. Ones: 0−10 cannot; borrow from 2. Ones become 16−10=6. Left digit 1−1=0. Answer 6₁₆.",
+                            "Safer method for Junior: convert both to decimal, subtract, convert back. Use this if borrowing feels messy. ACSL allows any correct method.",
+                            "Worked binary: 1010₂ − 11₂. Decimal 10−3=7=111₂. Or borrow through the columns."
+                        ],
+                        diagram: "Hex:   2 0₁₆\n      − 1 A₁₆\n      -------\n        6₁₆     because 32−26=6\n\nBinary: 1 0 1 0     (10)\n      −     1 1     ( 3)\n      ---------     ---\n        1 1 1       ( 7)",
+                        coachNote: "If borrowing melts them, bless the decimal bridge. Speed comes later; correctness first."
+                    ),
+                                        SlideCard(
+                        title: "Contest shape: multiply in another base (ACSL does this; no division)",
+                        bullets: [
+                            "ACSL Computer Number Systems includes addition, subtraction, AND multiplication in other bases. They do not ask you to divide in another base.",
+                            "Same as 3rd-grade multiply: one digit at a time, then add the partial products. Carry when you hit the BASE, not 10.",
+                            "Worked octal: 12₈ × 5₈. 2×5=10 decimal = 1×8+2, so write 2 carry 1. Then 1×5=5, plus carry 1 = 6. Answer 62₈.",
+                            "Check in decimal: 12₈=10, 5₈=5, 10×5=50. 62₈=6×8+2=50. Same person, different outfit.",
+                            "If the multiplier has two digits, do the ones digit first, then the eights (or sixteens) digit shifted one place left, then add in that base."
+                        ],
+                        diagram: "Octal:    1 2₈\n         ×     5₈\n         -------\n           6 2₈     2×5=10=12₈ write 2 carry 1; 1×5+1=6\n\nCheck: 10×5=50 and 6×8+2=50. Good.",
+                        coachNote: "If multiply-in-base melts them, bless decimal: convert, multiply, convert back. ACSL accepts any correct method."
+                    ),
+                    SlideCard(
+                        title: "Contest shape: fractions in binary / octal / hex",
+                        bullets: [
+                            "A point does not mean ‘decimal.’ It means the places go RIGHT of the point as 1/base, 1/base², 1/base³.",
+                            "Binary: 0.1₂ = 1/2 = 0.5.  0.01₂ = 1/4 = 0.25.  0.11₂ = 1/2 + 1/4 = 0.75.",
+                            "Octal: 0.4₈ = 4/8 = 0.5.  Hex: 0.8₁₆ = 8/16 = 0.5. Same value, different outfits.",
+                            "To convert a binary fraction to decimal: list places 1/2, 1/4, 1/8, 1/16… under each bit after the point, multiply, add.",
+                            "Integer part still uses 1, 2, 4, 8… to the LEFT. Example: 10.11₂ = 2 + 0.75 = 2.75."
+                        ],
+                        diagram: "0 . 1 1   in binary\n    1/2  1/4\n    0.5 + 0.25 = 0.75\n\n1 0 . 1    in binary\n2 + 0 + 0.5 = 2.5\n\n0.4₈ = 4/8 = 1/2",
+                        coachNote: "Say ‘the point is a fence, not a decimal.’ Quiz 0.1₂ until they say one-half, not one-tenth."
+                    ),
+                    SlideCard(
+                        title: "Drill until automatic: bits, octal triples, hex nybbles, powers",
+                        bullets: [
+                            "Octal digit → exactly 3 bits. Say them until they are songs: 0=000, 1=001, 2=010, 3=011, 4=100, 5=101, 6=110, 7=111.",
+                            "Hex digit → exactly 4 bits (a nybble). 0=0000 … 9=1001, A=1010, B=1011, C=1100, D=1101, E=1110, F=1111.",
+                            "Powers of 2 through 4096: 1,2,4,8,16,32,64,128,256,512,1024,2048,4096.",
+                            "Powers of 8 through 4096: 1,8,64,512,4096.",
+                            "Powers of 16 through 65536: 1,16,256,4096,65536.",
+                            "ACSL will not ask negative binaries or two’s complement on this category. Skip that rabbit hole."
+                        ],
+                        diagram: "Octal 3-bit:  0=000 1=001 2=010 3=011\n               4=100 5=101 6=110 7=111\nHex 4-bit:     A=1010 B=1011 C=1100\n               D=1101 E=1110 F=1111\n2^n: 1 2 4 8 16 32 64 128 256 512 1024 2048 4096",
+                        coachNote: "Flashcard 90 seconds every Week 2–4 homework check. No notes. Speed is a contest point."
+                    ),
+SlideCard(
                         title: "Week 3 homework · ~1 hour (due Sep 7)",
                         bullets: [
-                            "Paper (30 min): 45→binary, 50→hex, 63→octal, 101101₂→octal by grouping, 1011₂+0110₂.",
+                            "Paper (30 min): 45→binary, 50→hex, 101101₂→octal by grouping, 1011₂+0110₂, 12₈×5₈, 0.11₂ to decimal.",
                             "Type (30 min): format(45,'b'), format(50,'X'), format(63,'o'). Plus int() check that grouping answers match.",
                             "Write ‘pad left’ on the grouping problem so you remember."
                         ],
-                        diagram: "45 → 101101₂\\n50 → 32₁₆\\n63 → 77₈\\n101101₂ → 55₈\\n1011+0110 → 10001₂",
+                        diagram: "45 → 101101₂\\n50 → 32₁₆\\n101101₂ → 55₈\\n1011+0110 → 10001₂\\n12₈×5₈ = 62₈\\n0.11₂ = 0.75",
                         coachNote: "Collect grouping work. If they padded right, redo that one in the next homework-check."
                     ),
                     SlideCard(
@@ -859,6 +944,52 @@ private enum ContestCurriculum {
                         coachNote: "Have Soha change only the sample in her head: ‘If I type 77 8, what prints?’ Wait for 63. Then run it."
                     ),
                     SlideCard(
+                        title: "Python: several cases — T, then T lines",
+                        bullets: [
+                            "Some programming problems start with an integer T (how many test cases), then T lines of data.",
+                            "Read T first. Then loop exactly T times. Print one answer per case, each on its own line.",
+                            "sys.stdin.read().split() still works: first token is T, then the rest come in groups.",
+                            "Do not print ‘Case 1:’. Print only the answers, one per line, unless the spec says otherwise."
+                        ],
+                        diagram: "stdin:\n3\n1A 16\n1011 2\n77 8\n\nparts = sys.stdin.read().split()\nT = int(parts[0])\ni = 1\nfor _ in range(T):\n    numeral = parts[i]\n    base = int(parts[i+1])\n    print(int(numeral, base))\n    i += 2\n\n# prints:\n# 26\n# 11\n# 63",
+                        coachNote: "Walk the index i with a finger: after T, pairs of (numeral, base). Off-by-one here fails all hidden tests."
+                    ),
+                    SlideCard(
+                        title: "Python: Contest 1 programming is not always ‘convert’",
+                        bullets: [
+                            "The programming problem is its own story. It might be: read n, if n is even do this, else do that, maybe repeat a formula. Read the spec twice.",
+                            "Pattern: parse ints, then BRANCH (if/else), maybe a tiny loop or a recursive function, then print one number.",
+                            "Example spec: ‘If n is even, replace n with n/2. If odd, replace with 3n+1. Do this once. Print n.’ That is Collatz-one-step — branching, not conversion.",
+                            "Example: ‘Read a and b. Print the larger. If tied, print 0.’ Pure if/else.",
+                            "Match return type: int vs str. If they want YES/NO, print those exact letters."
+                        ],
+                        diagram: "n = int(input().strip())\nif n % 2 == 0:\n    n = n // 2\nelse:\n    n = 3 * n + 1\nprint(n)\n\n# 5 → 16    10 → 5\n\na, b = map(int, input().split())\nif a > b:\n    print(a)\nelif b > a:\n    print(b)\nelse:\n    print(0)",
+                        coachNote: "After conversion labs, do these two as a palate cleanser so they do not freeze when HackerRank is not a base conversion."
+                    ),
+                                        SlideCard(
+                        title: "Contest shape: the programming problem is 72 hours, not 5 mini-tests in the room",
+                        bullets: [
+                            "Junior Contest 1 short-answer is a sitting of 6 questions. The Python problem is SEPARATE: one HackerRank problem, about 72 hours to submit.",
+                            "You still practice hidden tests here because THAT is how HackerRank grades: exact stdout, several secret cases.",
+                            "Read the full problem: input format, sample, what to print. Then write one program that handles every case, including T then T lines if they use that.",
+                            "Submit, read the score, fix, resubmit inside the window. Do not wait until hour 71.",
+                            "Tracker in this app: programming 0–5 is the HackerRank score. Short-answer 0–5 is the paper (6 questions, 5 points)."
+                        ],
+                        diagram: "Paper day:  6 questions, 2 per topic, 5 pts\nThen ~72 hours: 1 program on HackerRank, 5 pts\n\nThis app’s Python tab = practice the hidden-test habit.",
+                        coachNote: "Do not scare them with 72 hours of coding. It is one problem, started the evening of the paper."
+                    ),
+SlideCard(
+                        title: "Python: % means remainder — even, odd, last digit",
+                        bullets: [
+                            "% is not percent here. a % b is the remainder when a is divided by b.",
+                            "n % 2 == 0 means n is even. n % 2 == 1 means odd. This shows up in recursion AND in if-tracing AND in programming.",
+                            "n % 10 is the last decimal digit. 47 % 10 is 7.",
+                            "// is whole-number divide: 5 // 2 is 2. 5 / 2 in Python 3 is 2.5 — ACSL almost always wants //."
+                        ],
+                        diagram: "print(5 % 2)    # 1  odd\nprint(6 % 2)    # 0  even\nprint(47 % 10)  # 7\nprint(5 // 2)   # 2\nprint(5 / 2)    # 2.5  ← usually wrong for ACSL ints",
+                        coachNote: "Chant: ‘percent remainder, slash-slash whole divide.’"
+                    ),
+                    SlideCard(
                         title: "Week 4 homework · ~1 hour (due Sep 14)",
                         bullets: [
                             "Paper (30 min): 10 mixed conversions (pick from class list or: 1111₂, 77₈, 10₁₆, 32₁₀→hex, 26₁₀→binary, 55₈→binary grouping, 2D₁₆→decimal, 10000₂, 1A₁₆+1, illegal 19₈).",
@@ -903,6 +1034,41 @@ private enum ContestCurriculum {
                         ],
                         diagram: " f(0)=1,  f(n)=n+f(n-1)\n\n n | f(n) | how I got it\n 0 |  1   | given\n 1 |  2   | 1 + 1\n 2 |  4   | 2 + 2\n 3 |  7   | 3 + 4\n 4 | 11   | 4 + 7     ← if they ask f(4), box 11",
                         coachNote: "Have Soha copy this exact table format on every recursion question for the rest of the season."
+                    ),
+                    SlideCard(
+                        title: "Contest shape: piecewise f(x) with several cutoffs",
+                        bullets: [
+                            "ACSL recursive functions often look like a stacked rule: different formulas depending on how big x is.",
+                            "Always start at the GIVEN x. Ask: which piece applies? Compute, that gives a smaller call, repeat until a base piece that does not call f.",
+                            "Example: f(x)= f(x−2)−3  if x≥10;  f(x)= f(x−2)+4 if 3≤x<10;  f(x)= x+7 if x<3.",
+                            "Find f(12): 12≥10 so f(12)=f(10)−3. 10≥10 so f(10)=f(8)−3. 8 is between 3 and 10 so f(8)=f(6)+4. Keep going until x<3.",
+                            "Write a downward chain, then substitute backward. Do not skip which piece you used."
+                        ],
+                        diagram: "f(x) = f(x-2)-3    if x ≥ 10\n     = f(x-2)+4    if 3 ≤ x < 10\n     = x+7         if x < 3\n\nf(12)= f(10)-3\nf(10)= f(8)-3\nf(8) = f(6)+4\nf(6) = f(4)+4\nf(4) = f(2)+4\nf(2) = 2+7 = 9     ← base\nThen back: f(4)=13, f(6)=17, f(8)=21, f(10)=18, f(12)=15",
+                        coachNote: "Box the piece used next to each line. The cutoff mistakes are all ‘I used the wrong band.’"
+                    ),
+                    SlideCard(
+                        title: "Nested calls: f(f(n)) — inside first",
+                        bullets: [
+                            "f(f(3)) means: first find f(3), then plug that NUMBER into f again.",
+                            "Never ‘do f twice in your head at once.’ Two table lookups.",
+                            "If f(0)=1, f(n)=n+f(n−1), then f(3)=7, so f(f(3))=f(7). Now you need the table out to 7.",
+                            "Python: return f(f(n-1)) is legal but you still need a base case. On paper, evaluate inside parentheses first — same as math class."
+                        ],
+                        diagram: "Table: n 0 1 2 3 4 5 6 7\n     f 1 2 4 7 11 16 22 29\n\nf(f(3)) = f(7) = 29\nf(f(0)) = f(1) = 2\nf(f(1)) = f(2) = 4",
+                        coachNote: "Have them compute f(3) out loud, write 7 on a sticky, then look up f(7). Physical two steps."
+                    ),
+                    SlideCard(
+                        title: "Contest shape: pattern / stage recursion (drawings)",
+                        bullets: [
+                            "Some Junior 1 problems are pictures: Stage 1 is a shape. Each new stage adds copies by a rule. They ask ‘how many segments after Stage 6?’",
+                            "Method: make a table Stage | count. Fill Stage 1 from the problem. Stage 2 from the problem. Find WHAT WAS ADDED each time.",
+                            "If the add-on is constant (always +8 segments), it is arithmetic: next = previous + 8.",
+                            "If the add-on itself grows, write a second column ‘new this stage’ and a third ‘total’.",
+                            "Do not skip to Stage 6 in your head. Fill 1 through 6. ACSL samples do this (rhombus / perimeter problems)."
+                        ],
+                        diagram: "Example: Stage 1: 4 segments\nEach later stage adds 8 more segments.\n\nStage | new | total\n  1   |  4  |  4\n  2   |  8  | 12\n  3   |  8  | 20\n  4   |  8  | 28\n  5   |  8  | 36\n  6   |  8  | 44     ← asked\n\nIf NEW grows (4,8,12,16…), add a ‘new’ column that goes up by 4.",
+                        coachNote: "If they freeze on the art, say: ‘Ignore the pretty picture. Steal the numbers they already computed for Stage 1–3, then continue the table.’"
                     ),
                     SlideCard(
                         title: "Python: recursion is just the table, written as a function",
@@ -986,7 +1152,53 @@ private enum ContestCurriculum {
                         diagram: "Grid (x down, y across). Edges are 1:\n       y=0  y=1  y=2\n x=0    1    1    1\n x=1    1    2    3     ← 1+1=2, then 2+1=3\n x=2    1    3    6     ← 1+2=3, then 3+3=6",
                         coachNote: "Project the empty grid. Fill it with the class like a tiny KenKen. Never let them recurse two arguments in their head."
                     ),
+                                        SlideCard(
+                        title: "Contest shape: named recipes — factorial and Fibonacci",
+                        bullets: [
+                            "ACSL recursive-functions wiki starts with names you may hear: factorial and Fibonacci. Same table method.",
+                            "Factorial: f(0)=1, f(n)=n×f(n-1). Rows: 1, 1, 2, 6, 24, 120… That is 0!, 1!, 2!, 3!, 4!, 5!.",
+                            "Fibonacci: f(0)=0, f(1)=1, f(n)=f(n-1)+f(n-2). Rows: 0,1,1,2,3,5,8,13… Need TWO previous numbers.",
+                            "Contest problems often do NOT use the names. They give the two rules. If they do say Fibonacci, still fill the table — do not recite from memory past f(10) unless you wrote it."
+                        ],
+                        diagram: "n! :  n  0 1 2 3  4   5\n       f  1 1 2 6 24 120\n\nFib: n  0 1 2 3 4 5 6 7\n      f  0 1 1 2 3 5 8 13",
+                        coachNote: "Names are optional vocabulary. The table is the point."
+                    ),
                     SlideCard(
+                        title: "Contest shape: when x is negative — the other stopping rule",
+                        bullets: [
+                            "Wiki sample: g(x) = g(x-3)+1  if x>0,  else  3x. The else includes ZERO? Read: if x>0 recurse; otherwise (x≤0) use 3x. Zero: 3×0=0. Negatives: 3 times that negative.",
+                            "Worked g(7): 7>0 so g(4)+1. 4>0 so g(1)+1. 1>0 so g(-2)+1. -2 is not >0, so g(-2)=3×(-2)=-6.",
+                            "Now add the +1s on the way back: g(1)=-6+1=-5. g(4)=-5+1=-4. g(7)=-4+1=-3.",
+                            "Three-band example: if x>5 use one formula; if 0≤x≤5 use another; if x<0 use h(x+3) — you CLIMB toward zero by adding 3, then come back.",
+                            "Always write the test that fired: >0? ≤0? <0? Do not assume stopping is only n=0."
+                        ],
+                        diagram: "g(7)=g(4)+1\n    =g(1)+1+1\n    =g(-2)+1+1+1\n    =-6 + 3 = -3\n\nNegative x is allowed. 3x can be negative. That is the answer."
+                    ),
+                    SlideCard(
+                        title: "Contest shape: two arguments the ACSL way — f(x-y, y-1)+2",
+                        bullets: [
+                            "Wiki sample: f(x,y) = f(x-y, y-1)+2  if x>y,  else  x+y.",
+                            "Stopping is not ‘hit zero.’ Stopping is ‘x is NOT greater than y’ — including equal.",
+                            "f(5,3): 5>3 true, so f(2,2)+2. Now 2>2 false, so f(2,2)=2+2=4. Then f(5,3)=4+2=6.",
+                            "Longer example f(4,1): 4>1 so f(3,0)+2. 3>0 so f(3,-1)+2. 3>-1 so f(4,-2)+2. Keep listing (x,y) until x≤y, then x+y, then +2 for every pending step.",
+                            "Safer: write the chain of pairs on paper. Never jump. Stop when x is not greater than y."
+                        ],
+                        diagram: "f(5,3) → f(2,2)+2\n2>2? No. f(2,2)=4\nso f(5,3)=6\n\nChain: (5,3) → (2,2) STOP 4, then +2.",
+                        coachNote: "Do f(5,3) as a class. Do NOT start f(6,2) until 5,3 is automatic — that one chains longer."
+                    ),
+                    SlideCard(
+                        title: "Contest shape: paint-the-square recursion (geometry)",
+                        bullets: [
+                            "Wiki picture: a square of side 16. Split into 4 equal squares. Paint 1 of the 4. Recurse on the other 3. Repeat until the leftover squares have side 1.",
+                            "Each level: you paint 1/4 of the current squares’ area, then three copies continue.",
+                            "Side 16 → four 8×8. Paint one 8×8 (area 64). Three 8×8 remain. Each of those paints one 4×4 (area 16 × 3 = 48). Continue.",
+                            "Official wiki sample: side 16 paints 175. Do not memorize 175 — a different side length is a different sum.",
+                            "Work a table by stage (side 16, 8, 4, 2): how many squares painted at that size × area, then add."
+                        ],
+                        diagram: "Side 16: paint 1 square area 64.  3 left.\nSide  8: paint 3 squares area 16 → 48.\nSide  4: paint 9 squares area  4 → 36.\nSide  2: paint 27 squares area 1 → 27.\nTotal painted 64+48+36+27 = 175.\n(Unpainted tiny remainder is 0 at side 1 if the rule paints the last 1s — wiki total 175.)",
+                        coachNote: "Draw the first split on the board. The 175 is a famous ACSL sample — if they memorize 175 without the table, they will miss a different side length."
+                    ),
+SlideCard(
                         title: "Try these three — recursion (do now)",
                         bullets: [
                             "A) f(0)=3, f(n)=2×f(n−1)−1. Find f(4). Write every row 0 through 4.",
@@ -1002,9 +1214,9 @@ private enum ContestCurriculum {
                         bullets: [
                             "Paper (30 min): A, B, C from the drill slide with every row written. A must show 33.",
                             "Type (30 min): function for A. print(f(4)) → 33. Optional: loop print k, f(k) for k in range(0,5).",
-                            "Draw one 3×3 two-arg grid (edges 1) if you still have time."
+                            "Also: g(7) from g(x)=g(x-3)+1 if x>0 else 3x. And f(5,3) from f(x,y)=f(x-y,y-1)+2 if x>y else x+y."
                         ],
-                        diagram: "A f(4)=33\\nB g(5)=12\\nC h(6)=3",
+                        diagram: "A f(4)=33\\nB g(5)=12\\nC h(6)=3\\ng(7)=-3\\nf(5,3)=6",
                         coachNote: "If A is 17, they did not count f(0) as a row. Redo A only, fully."
                     ),
                     SlideCard(
@@ -1032,6 +1244,44 @@ private enum ContestCurriculum {
                         coachNote: "Cover the else with a sheet of paper when the if is true. Physical covering stops ‘I also did the else just in case.’"
                     ),
                     SlideCard(
+                        title: "ACSL short-answer uses pseudocode, not Python indent",
+                        bullets: [
+                            "Junior short-answer has 6 questions total (2 number systems, 2 recursion, 2 branching). Branching is ACSL / Pascal-like: if … then … else …, INPUT, OUTPUT. You may see THEN and END IF.",
+                            "Read it as the same hallway: one condition, then-block or else-block. Trace a variable table.",
+                            "input a, b  means the problem will tell you the starting numbers in the stem (‘for a=7, b=3’).",
+                            "output a, b  means write those final values in that order — that is the answer.",
+                            ":= or = may mean ‘put in the box’ in pseudocode. The test for equal is often = or == depending on the year. The stem’s sample is the law."
+                        ],
+                        diagram: "a := 7\nb := 3\nif a > b then\n    a := a - b\nelse\n    b := b - a\nendif\noutput a, b\n\nSame as Python if/else. Trace: 7>3, a=4, skip else. Output 4 3.",
+                        coachNote: "Translate one ACSL block into Python on the board so they see they already know it."
+                    ),
+                                        SlideCard(
+                        title: "Contest shape: ACSL operators and built-in functions (WDTTPD)",
+                        bullets: [
+                            "From the ACSL ‘What Does This Program Do?’ wiki — Junior Contest 1 branching uses these, NOT loops or arrays.",
+                            "Arithmetic: + − * /  (slash is real divide)  % remainder  ^ exponent  ! factorial.",
+                            "Compare: == equal, != not equal, < > <= >=.",
+                            "Logic: && and, || or.  ! in front of a test can mean NOT (read the stem).",
+                            "Functions: abs(x) absolute value. sqrt(x) square root. int(x) is FLOOR — chop toward −∞ for positives it looks like ‘drop the decimal.’ int(3.9)=3. int(-1.2) is −2 if they use true floor; Junior samples are usually positive.",
+                            "Two statements on one line: a colon :  means ‘then do this too.’ Example: a := 1 : b := 2."
+                        ],
+                        diagram: "5 / 2     = 2.5    (real divide)\n5 % 2     = 1      (remainder)\n5 ^ 2     = 25     (not XOR here)\n5 !       = 120    (factorial)\nint(9/2)  = 4      (floor of 4.5)\nabs(-3)   = 3",
+                        coachNote: "Poster: % leftover, / real, // is Python-only. ACSL pseudocode uses / as real and int() to floor."
+                    ),
+                    SlideCard(
+                        title: "Contest shape: INPUT, THEN, END IF, and the overtime classic",
+                        bullets: [
+                            "INPUT h, r  means the problem gives starting hours and rate in the question stem.",
+                            "IF condition THEN  statement(s)  END IF.  ELSE sits between THEN-block and END IF.",
+                            "Classic ACSL sample (overtime): two SEPARATE IFs, not if/else. Hours=50, rate=10.",
+                            "IF h>48 THEN r := r+5 END IF.  Then IF h>40 THEN r := r + (h-40)*2 END IF.",
+                            "50>48 true, r=15. 50>40 true, r=15+(10)*2=35. BOTH ran. If they invent an else, they get 15 and miss the point.",
+                            "Junior Contest 1 must NOT use FOR, WHILE, arrays, or string loops on the paper. If you see a loop, you are in the wrong contest packet."
+                        ],
+                        diagram: "h := 50\nr := 10\nIF h > 48 THEN\n    r := r + 5\nEND IF\nIF h > 40 THEN\n    r := r + (h - 40) * 2\nEND IF\nOUTPUT r\n\n→ 35",
+                        coachNote: "This is THE two-if trap with a story. Act it: bonus for over 48, then overtime dollars for hours past 40."
+                    ),
+SlideCard(
                         title: "elif means ‘else if’ — still only ONE winner",
                         bullets: [
                             "if / elif / else is a chain. The computer checks from the top. The FIRST true condition wins. The rest are ignored.",
@@ -1069,6 +1319,17 @@ private enum ContestCurriculum {
                         coachNote: "Type the two-if program live. Change n to 12 and predict before running: first if fires (n=2), second if does not (2>5 false). Print 2."
                     ),
                     SlideCard(
+                        title: "Python: % in an if — even/odd traces",
+                        bullets: [
+                            "if n % 2 == 0: means ‘if n is even.’ else is the odd path.",
+                            "Worked: n=5, odd, so 3*n+1=16. n=10, even, n//2=5.",
+                            "Do not mix up % and //. % leftover. // how many whole groups.",
+                            "On paper, write EVEN or ODD next to n before you branch."
+                        ],
+                        diagram: "n = 5\nif n % 2 == 0:\n    n = n // 2\nelse:\n    n = 3 * n + 1\nprint(n)        # 16\n\nn = 10\n# even path → 5",
+                        coachNote: "This is the programming-problem cousin of Week 7 tracing. Pair with the Collatz-one-step lab."
+                    ),
+                    SlideCard(
                         title: "Try these three — if/else (do now)",
                         bullets: [
                             "P1: a,b = 4,9. if a>b: a=a+1  elif a==b: a=0  else: b=b-a. Print a and b.",
@@ -1094,12 +1355,26 @@ private enum ContestCurriculum {
                         bullets: [
                             "0:00–0:15  If/else homework.",
                             "0:15–0:40  Hidden-test mistakes. Three mini programs A/B/C (convert, f(4), if/elif).",
-                            "0:40–1:10  Team Mock Exams → Contest 1 (5 short-answer). Quiet. Then reveal keys and walk misses.",
+                            "0:40–1:10  Team Mock Exams → Contest 1 (6 short-answer: 2+2+2). Quiet. Then reveal keys and walk misses.",
                             "1:10–1:25  Contest-day checklist. One combined .py: convert or recurse as assigned, print only the answer.",
                             "1:25–1:30  Light homework: sleep and a short mixed review, no new topics."
                         ],
                         diagram: "Target: mock ≥ 4/5\\nProgramming output is EXACTLY the number\\nHex strip A=10…F=15 in the pencil case",
                         coachNote: "Do not teach Contest 2 tonight. Confidence > new content."
+                    ),
+                    SlideCard(
+                        title: "Timed mixed 6 — looks like the real short-answer (15 min)",
+                        bullets: [
+                            "Silent. Pencil. 15 minutes. Six questions, two per topic — that is the real Junior paper.",
+                            "Q1. How many 1s in binary of 45?",
+                            "Q2. Convert 2F₁₆ to octal (binary bridge).",
+                            "Q3. f(0)=1, f(n)=n+f(n-1). Find f(f(3)).",
+                            "Q4. g(x)=g(x-3)+1 if x>0 else 3x. Find g(7).",
+                            "Q5. ACSL: a:=4, b:=9; if a>b then a:=a+1 else b:=b-a; output a,b.",
+                            "Q6. Hours=50, rate=10. if h>48 then r:=r+5. if h>40 then r:=r+(h-40)*2. Final r?"
+                        ],
+                        diagram: "Answers (reveal after the timer):\nQ1 4\nQ2 57₈\nQ3 29\nQ4 -3\nQ5 4 5\nQ6 35  (both IFs run)",
+                        coachNote: "Grade like ACSL: exact. Then walk only the misses. Send them to Team Mock Exams for a second 6."
                     ),
                     SlideCard(
                         title: "Python mistakes that fail ACSL hidden tests",
@@ -2035,7 +2310,7 @@ private struct TeamMockExamsView: View {
     let selectedStudentName: String
     @Binding var revealKeys: Bool
     @State private var contestPick = 1
-    @State private var responses: [String] = Array(repeating: "", count: 5)
+    @State private var responses: [String] = Array(repeating: "", count: 6)
     @Environment(\.teachingScale) private var scale
 
     var body: some View {
@@ -2043,9 +2318,9 @@ private struct TeamMockExamsView: View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
                 VStack(alignment: .leading) {
-                    Text("Team mock · 5 short-answer questions")
+                    Text("Team mock · \(exam.questions.count) short-answer questions")
                         .font(.system(size: 22 * scale, weight: .bold, design: .rounded))
-                    Text("Focus student: \(selectedStudentName). Programming (5 pts) is scored separately on hidden tests.")
+                    Text("Focus student: \(selectedStudentName). ACSL Junior paper is 6 questions (2 per topic). Programming is a separate 72-hour HackerRank problem (5 pts).")
                         .font(.system(size: 13 * scale))
                         .foregroundStyle(.secondary)
                 }
@@ -2056,7 +2331,7 @@ private struct TeamMockExamsView: View {
                 .pickerStyle(.segmented)
                 .frame(maxWidth: 420)
                 .onChange(of: contestPick) { _, _ in
-                    responses = Array(repeating: "", count: 5)
+                    responses = Array(repeating: "", count: 6)
                 }
             }
             .padding(16)
@@ -2071,7 +2346,7 @@ private struct TeamMockExamsView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 Spacer()
-                Text("Short-answer score preview: \(score(exam))/5")
+                Text("Short-answer score preview: \(score(exam))/\(exam.questions.count)")
                     .font(.headline.monospaced())
             }
             .padding(.horizontal, 16)
@@ -2121,16 +2396,18 @@ private struct TeamMockExamsView: View {
 
     private static let exams: [MockExam] = [
         MockExam(contest: 1, title: "Contest 1", questions: [
-            MockQuestion(prompt: "Convert 1A16 to decimal.", answer: "26",
-                         derivation: "1×16 + 10 = 16+10 = 26. Python: int('1A', 16)."),
-            MockQuestion(prompt: "Convert 1011012 to octal.", answer: "55",
-                         derivation: "Group bits by 3 from the right: 101 1012 = 5 58 → 558."),
-            MockQuestion(prompt: "f(0)=1, f(n)=n+f(n-1). Find f(4).", answer: "11",
-                         derivation: "f(1)=2, f(2)=4, f(3)=7, f(4)=11. Unwind the recursion; do not guess n!."),
-            MockQuestion(prompt: "After: a,b=7,3; if a>b: a=a-b else: b=b-a. Print a,b.", answer: "4,3",
-                         derivation: "7>3 true so a=4. Branch tracing: only the true arm runs. Output 4 3."),
-            MockQuestion(prompt: "int('77', 8) in Python equals?", answer: "63",
-                         derivation: "7×8+7=63. Hidden tests: parse tokens then int(s, base).")
+            MockQuestion(prompt: "How many 1s in the binary of 45?", answer: "4",
+                         derivation: "45=101101₂. Count 1s: four. Not the value 45."),
+            MockQuestion(prompt: "Convert 2F16 to octal (binary bridge).", answer: "57",
+                         derivation: "2=0010, F=1111 → 00101111 → groups of 3: 101 111 → 57₈."),
+            MockQuestion(prompt: "f(0)=1, f(n)=n+f(n-1). Find f(f(3)).", answer: "29",
+                         derivation: "f(3)=7 first. Then f(7)=29 from the table."),
+            MockQuestion(prompt: "g(x)=g(x-3)+1 if x>0 else 3x. Find g(7).", answer: "-3",
+                         derivation: "g(7)=g(4)+1=g(1)+1+1=g(-2)+1+1+1. g(-2)=3*(-2)=-6. Then -6+3=-3."),
+            MockQuestion(prompt: "f(x,y)=f(x-y,y-1)+2 if x>y else x+y. Find f(5,3).", answer: "6",
+                         derivation: "5>3 so f(2,2)+2. 2>2 is false so 2+2=4. Then 4+2=6."),
+            MockQuestion(prompt: "h=50, r=10. if h>48 then r:=r+5. if h>40 then r:=r+(h-40)*2. Final r?", answer: "35",
+                         derivation: "Classic overtime: both IFs can run. 50>48 so r=15. 50>40 so r=15+10*2=35.")
         ]),
         MockExam(contest: 2, title: "Contest 2", questions: [
             MockQuestion(prompt: "Evaluate postfix: 3 4 + 5 *", answer: "35",
