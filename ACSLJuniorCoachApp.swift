@@ -104,6 +104,7 @@ private struct SlideCard {
     let title: String
     let bullets: [String]
     let diagram: String
+    var coachNote: String = ""
 }
 
 private struct ContestSyllabus {
@@ -227,44 +228,11 @@ private struct ACSLJuniorCoachRootView: View {
             TeamStudent(
                 id: UUID(),
                 name: "Soha",
-                roleNote: "Focus student · strong on theory, building HackerRank I/O",
+                roleNote: "Junior Division · theory and Python HackerRank I/O",
                 scores: [
                     RoundScore(shortAnswer: 4, programming: 4),
                     RoundScore(shortAnswer: 5, programming: 3),
                     RoundScore(shortAnswer: 3, programming: 4),
-                    RoundScore(shortAnswer: 0, programming: 0)
-                ]
-            ),
-            TeamStudent(
-                id: UUID(),
-                name: "Alex",
-                roleNote: "Fast tracer · watch bit-flicking operator order",
-                scores: [
-                    RoundScore(shortAnswer: 5, programming: 5),
-                    RoundScore(shortAnswer: 4, programming: 5),
-                    RoundScore(shortAnswer: 4, programming: 4),
-                    RoundScore(shortAnswer: 3, programming: 2)
-                ]
-            ),
-            TeamStudent(
-                id: UUID(),
-                name: "Maya",
-                roleNote: "Boolean algebra lead · graph matrices next",
-                scores: [
-                    RoundScore(shortAnswer: 3, programming: 4),
-                    RoundScore(shortAnswer: 3, programming: 3),
-                    RoundScore(shortAnswer: 5, programming: 4),
-                    RoundScore(shortAnswer: 2, programming: 3)
-                ]
-            ),
-            TeamStudent(
-                id: UUID(),
-                name: "Liam",
-                roleNote: "Python first · needs number-base conversions",
-                scores: [
-                    RoundScore(shortAnswer: 2, programming: 5),
-                    RoundScore(shortAnswer: 2, programming: 4),
-                    RoundScore(shortAnswer: 1, programming: 3),
                     RoundScore(shortAnswer: 0, programming: 0)
                 ]
             )
@@ -443,7 +411,7 @@ private struct ContestTrainingView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(syllabus.title)
                         .font(.system(size: 22 * scale, weight: .bold, design: .rounded))
-                    Text("Teaching \(selectedStudentName) and the team · \(syllabus.topics.joined(separator: " · "))")
+                    Text("Teaching \(selectedStudentName) · \(syllabus.topics.joined(separator: " · "))")
                         .font(.system(size: 13 * scale))
                         .foregroundStyle(.secondary)
                 }
@@ -470,6 +438,7 @@ private struct ContestTrainingView: View {
                     PythonHackerRankSimulatorView(contest: contest, studentName: selectedStudentName)
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 }
@@ -483,52 +452,236 @@ private enum ContestCurriculum {
                 title: "Contest 1 — Number Systems, Recursion, Branch Tracing",
                 topics: ["Number Systems", "Recursion", "Branch Tracing"],
                 slides: [
-                    SlideCard(title: "Number Systems", bullets: [
-                        "Bases you must convert: binary (2), octal (8), decimal (10), hexadecimal (16).",
-                        "Place value: digit × base^position. Example: 1A16 = 1×16 + 10 = 2610.",
-                        "Shortcuts: 3 binary digits = 1 octal digit; 4 binary digits = 1 hex digit.",
-                        "Watch ACSL notation: trailing subscripts name the base (10112, 178, 2F16)."
-                    ], diagram: "10112 → group by 4 → B16\n178 → 1×8+7 = 1510 → F16"),
-                    SlideCard(title: "Recursion", bullets: [
-                        "A recursive function calls itself on a smaller input until a base case.",
-                        "Always identify: (1) base case, (2) recursive case, (3) what is returned.",
-                        "Evaluate from the inside out: f(3) needs f(2) needs f(1), then unwind.",
-                        "ACSL often uses piecewise definitions: f(n) = n + f(n−1), f(0)=1."
-                    ], diagram: "f(3)\n └─ 3 + f(2)\n      └─ 2 + f(1)\n           └─ 1 + f(0)=1"),
-                    SlideCard(title: "Branch Tracing (WDTTPD)", bullets: [
-                        "Trace if / elif / else exactly as written. Indentation is the structure.",
-                        "Track each variable after every assignment. Never skip a branch mentally.",
-                        "Boolean conditions: == vs = ; and/or short-circuit in Python.",
-                        "Final printed value (or returned value) is the short-answer."
-                    ], diagram: "if a > b: a = a - b\nelse: b = b - a\nprint(a, b)")
+                    SlideCard(
+                        title: "Lesson map (60–75 min)",
+                        bullets: [
+                            "Part A (25 min): Computer Number Systems — place value, 2/8/10/16, grouping shortcuts, add in another base.",
+                            "Part B (20 min): Recursive functions — find the base case, build a table, unwind the tree.",
+                            "Part C (15 min): Branch tracing (What Does This Program Do?) — if/elif/else, and/or, print vs return.",
+                            "Part D (10 min): Python HackerRank I/O — input().strip().split() and int(s, base).",
+                            "Soha should leave able to convert any ACSL numeral on paper in under a minute, and trace a 6-line if-program without guessing."
+                        ],
+                        diagram: "Contest 1 short-answer = 5 questions mixed from A+B+C\nProgramming = 5 hidden tests on parsing + conversion/recursion",
+                        coachNote: "Write the three topic names on the board first. Tell Soha every Contest 1 paper is those three skills only — nothing else."
+                    ),
+                    SlideCard(
+                        title: "Number systems — what ACSL actually asks",
+                        bullets: [
+                            "Four bases only: binary 2, octal 8, decimal 10, hexadecimal 16.",
+                            "A trailing subscript names the base: 1011₂ , 17₈ , 2F₁₆ , 47₁₀. If there is no subscript, assume decimal.",
+                            "Hex digits: 0–9 then A=10, B=11, C=12, D=13, E=14, F=15. Case does not matter (a = A).",
+                            "Typical stems: convert X from base A to base B; add two numbers in the same base; ‘how many bits?’ via grouping."
+                        ],
+                        diagram: "Legal hex: 0 1 2 3 4 5 6 7 8 9 A B C D E F\nIllegal in octal: 8 and 9   Illegal in binary: any digit except 0,1",
+                        coachNote: "Quiz out loud: ‘Is 18₈ legal?’ No — 8 is not an octal digit. Catch this before converting."
+                    ),
+                    SlideCard(
+                        title: "Place value — the only formula you need",
+                        bullets: [
+                            "Value = dₙ·bⁿ + dₙ₋₁·bⁿ⁻¹ + … + d₁·b¹ + d₀·b⁰.",
+                            "Positions count from the right, starting at exponent 0.",
+                            "Worked: 1A₁₆ = 1·16¹ + 10·16⁰ = 16 + 10 = 26₁₀.",
+                            "Worked: 2F₁₆ = 2·16 + 15 = 47₁₀.",
+                            "Worked: 77₈ = 7·8 + 7 = 63₁₀.",
+                            "Worked: 101101₂ = 32+8+4+1 = 45₁₀."
+                        ],
+                        diagram: "  1 A   hex\n 16¹ 16⁰\n  1×16 + 10×1 = 26\n\n  1 0 1 1 0 1   binary\n 32 16  8  4  2  1\n 32 + 0 + 8 + 4 + 0 + 1 = 45",
+                        coachNote: "Always draw the power row under the digits. Do not skip this on paper even when it feels slow — this is how Soha avoids off-by-one exponents."
+                    ),
+                    SlideCard(
+                        title: "Decimal → other bases (repeated divide)",
+                        bullets: [
+                            "To convert N₁₀ to base b: divide by b, record remainders, read remainders from last to first.",
+                            "Example 26₁₀ → hex: 26÷16 = 1 remainder 10 (A). Stop. Answer 1A₁₆.",
+                            "Example 45₁₀ → binary: 45÷2 remainders 1,0,1,1,0,1 then reverse → 101101₂.",
+                            "Example 63₁₀ → octal: 63÷8 = 7 r 7 → 77₈.",
+                            "Check by converting back with place value. If it does not match, a remainder was written in the wrong order."
+                        ],
+                        diagram: "45 ÷ 2 = 22 r 1\n22 ÷ 2 = 11 r 0\n11 ÷ 2 =  5 r 1\n 5 ÷ 2 =  2 r 1\n 2 ÷ 2 =  1 r 0\n 1 ÷ 2 =  0 r 1   ← last remainder is the leftmost bit\nRead up: 101101₂",
+                        coachNote: "Remainders are written top-to-bottom as you compute, then you read bottom-to-top for the answer. Circle the last remainder."
+                    ),
+                    SlideCard(
+                        title: "Speed trick — grouping bits",
+                        bullets: [
+                            "Binary ↔ octal: groups of 3 bits (because 2³ = 8). Pad with 0s on the LEFT, never the right.",
+                            "Binary ↔ hex: groups of 4 bits (because 2⁴ = 16). Pad left with 0s.",
+                            "101101₂ → octal: 101 101 → 5 5 → 55₈.",
+                            "101101₂ → hex: 0010 1101 → 2 D → 2D₁₆.",
+                            "Check: 2D₁₆ = 2·16+13 = 45, and 101101₂ was 45. Same number."
+                        ],
+                        diagram: "to octal   …  101 | 101\n                 5  |  5     → 55₈\n\nto hex     00 10 | 1101\n               2  |    D     → 2D₁₆",
+                        coachNote: "This is the #1 ACSL time-saver. Practice three conversions using ONLY grouping, no place-value expansion."
+                    ),
+                    SlideCard(
+                        title: "Adding in another base",
+                        bullets: [
+                            "Add column by column from the right. If the column sum ≥ the base, write (sum mod base) and carry (sum ÷ base).",
+                            "Binary: 1+1 = 10₂ → write 0, carry 1.  1+1+1 = 11₂ → write 1, carry 1.",
+                            "Hex: A+7 = 10+7 = 17₁₀ = 11₁₆ → write 1, carry 1.",
+                            "Worked: 1011₂ + 0110₂ = 10001₂.",
+                            "Worked: 2F₁₆ + 13₁₆ = 42₁₆  (15+3=18=12₁₆ write 2 carry 1; 2+1+1=4)."
+                        ],
+                        diagram: "   1 0 1 1\n+  0 1 1 0\n  --------\n 1 0 0 0 1     (carry 1 from the two 1s in the 2s place)\n\n   2 F\n+  1 3\n  ----\n   4 2₁₆",
+                        coachNote: "Have Soha say the column in decimal first (‘F is 15, plus 3 is 18’), then convert 18 back into hex."
+                    ),
+                    SlideCard(
+                        title: "Board drill — number systems (do now)",
+                        bullets: [
+                            "1) 1C₁₆ → decimal.  2) 110111₂ → octal.  3) 50₁₀ → hex.",
+                            "4) 67₈ → binary (via grouping).  5) 1010₂ + 1111₂.",
+                            "Answers: 28 ; 67₈ ; 32₁₆ ; 110111₂ ; 11001₂.",
+                            "If any miss: redo with the power row drawn. No calculator except the sandbox tab to check."
+                        ],
+                        diagram: "1) 1×16+12=28\n2) 110 111 → 6 7 → 67₈\n3) 50÷16=3 r 2 → 32₁₆\n4) 67₈ = 110 111₂\n5) 1010+1111=11001₂ (10+15=25=11001₂)",
+                        coachNote: "Pause here. Do not start recursion until these five are correct. Use Interactive Sandbox to verify live."
+                    ),
+                    SlideCard(
+                        title: "Recursion — three questions every time",
+                        bullets: [
+                            "1) What is the base case? (the line that does not call f again)",
+                            "2) What is the recursive case? (how f(n) uses a smaller argument)",
+                            "3) What exactly is returned? (an expression, not ‘it calls itself’)",
+                            "ACSL writes piecewise math: f(0)=1,  f(n)=n+f(n−1) for n>0.",
+                            "Python equivalent: if n==0: return 1 else: return n + f(n-1)."
+                        ],
+                        diagram: "f(n) = n + f(n-1),  f(0)=1\n\nf(4) = 4 + f(3)\n     = 4 + 3 + f(2)\n     = 4 + 3 + 2 + f(1)\n     = 4 + 3 + 2 + 1 + f(0)\n     = 4+3+2+1+1 = 11",
+                        coachNote: "Ban the word ‘factorial’ until the table is filled. f(n)=n+f(n-1), f(0)=1 is NOT n! — it is triangular numbers plus 1."
+                    ),
+                    SlideCard(
+                        title: "Recursion method — build a table, not a story",
+                        bullets: [
+                            "Start at the base case and compute upward. This is faster and fewer mistakes than drawing a huge tree.",
+                            "f(0)=1",
+                            "f(1)=1+f(0)=2",
+                            "f(2)=2+f(1)=4",
+                            "f(3)=3+f(2)=7",
+                            "f(4)=4+f(3)=11",
+                            "If ACSL asks f(4), the answer is 11. Box it."
+                        ],
+                        diagram: " n | f(n)\n 0 |  1     ← given\n 1 |  2\n 2 |  4\n 3 |  7\n 4 | 11     ← asked",
+                        coachNote: "Soha writes the table on every recursion question. Trees are for showing the class; tables are for scoring points."
+                    ),
+                    SlideCard(
+                        title: "Harder recursion ACSL uses",
+                        bullets: [
+                            "Two arguments: f(x,y)=f(x−1,y)+f(x,y−1), with f(0,*)=1 and f(*,0)=1. Fill a grid.",
+                            "Conditional: f(n)=f(n−1)+n if n even, else f(n−1)−1. Trace parity each row.",
+                            "Nested: f(n)=f(f(n−1)). Compute inner first, then outer.",
+                            "Example: f(0)=2, f(n)=n·f(n−1)+1.  f(1)=1·2+1=3, f(2)=2·3+1=7, f(3)=3·7+1=22.",
+                            "Example two-arg: f(1,1)=f(0,1)+f(1,0)=1+1=2."
+                        ],
+                        diagram: "Grid for f(x,y), base 1 on axes:\n      y=0  y=1  y=2\nx=0    1    1    1\nx=1    1    2    3\nx=2    1    3    6\n(binomial-looking — that is OK to notice after the grid is filled)",
+                        coachNote: "For two-argument recursion, draw the grid on the projector. Never try to recurse in your head past f(2,2)."
+                    ),
+                    SlideCard(
+                        title: "Board drill — recursion (do now)",
+                        bullets: [
+                            "A) f(0)=3, f(n)=2·f(n−1)−1. Find f(4).",
+                            "B) g(0)=0, g(1)=1, g(n)=g(n−1)+g(n−2)+1. Find g(5).",
+                            "C) h(n)=n−h(n−1), h(0)=0. Find h(6).",
+                            "Answers: A) 33   B) 12   C) 3. Watch the off-by-one: f(0) counts as a row."
+                        ],
+                        diagram: "A: 3, 5, 9, 17, 33…  f(4)=17?  f(1)=5, f(2)=9, f(3)=17, f(4)=33.\n   CORRECT A = 33. (Coach: trap — off-by-one on which n)\nB: 0,1,2,4,7,12  g(5)=12\nC: 0,1,1,2,2,3,3  h(6)=3",
+                        coachNote: "Point out the off-by-one trap in A. Count rows: f(0),f(1),f(2),f(3),f(4). Answer is 33, not 17. This is a real ACSL miss."
+                    ),
+                    SlideCard(
+                        title: "Branch tracing — rules of the road",
+                        bullets: [
+                            "This is ACSL ‘What Does This Program Do?’ for Junior: short Python (or ACSL pseudocode) with if/else.",
+                            "Make a two-column table: Line | a, b, c, printed.",
+                            "Python: indentation IS the block. The else pairs with the nearest unmatched if at the same indent.",
+                            "== tests equality. = assigns. Mixing them is a contest killer.",
+                            "and / or short-circuit: False and X never evaluates X; True or X never evaluates X.",
+                            "print outputs. return leaves the function. ACSL may ask the printed line or the final variables."
+                        ],
+                        diagram: "a, b = 7, 3\nif a > b:\n    a = a - b\nelse:\n    b = b - a\nprint(a, b)\n\nTrace: 7>3 True → a=4. else skipped. print 4 3",
+                        coachNote: "Act it out: cover the else with your hand when the if is true. Students still peek at the else — that is the bug."
+                    ),
+                    SlideCard(
+                        title: "Worked traces (project these)",
+                        bullets: [
+                            "Nested if: if a>5: if a>10: a=0 else: a=a-1. For a=8 → inner else → a=7. For a=12 → a=0. For a=3 → no change.",
+                            "elif chain: only ONE arm runs. After a hit, skip the rest.",
+                            "range is Contest 2, but if it appears: range(1,4) is 1,2,3 — stop before 4.",
+                            "Worked: a=5; if a%2==0: a=a//2 else: a=3*a+1 → odd → 16."
+                        ],
+                        diagram: "a = 8\nif a > 5:\n    if a > 10:\n        a = 0\n    else:\n        a = a - 1\nprint(a)          # 7\n\na = 5\nif a % 2 == 0:\n    a = a // 2\nelse:\n    a = 3 * a + 1\nprint(a)          # 16",
+                        coachNote: "Have Soha fill the variable table before looking at the answer. Then reveal."
+                    ),
+                    SlideCard(
+                        title: "Board drill — branch tracing (do now)",
+                        bullets: [
+                            "P1: a,b=4,9; if a>b: a=a+1 elif a==b: a=0 else: b=b-a; print(a,b)",
+                            "P2: n=7; if n>10: n=n-10; if n>5: n=n-5; print(n)   (two separate ifs, not else)",
+                            "P3: x=2; y=5; if x<y and y<10: x=x*y; print(x)",
+                            "Answers: P1 → 4 5    P2 → 2    P3 → 10"
+                        ],
+                        diagram: "P1: 4>9 False, 4==9 False, else b=9-4=5 → 4 5\nP2: 7>10 False (skip). 7>5 True → n=2. print 2\nP3: True and True → x=10",
+                        coachNote: "P2 is the classic trap: two ifs, not if/else. Both can run. Circle that on the board."
+                    ),
+                    SlideCard(
+                        title: "How this shows up in the programming problem",
+                        bullets: [
+                            "Hidden tests send raw stdin: often ‘1A 16’ or two integers on one line.",
+                            "Parse with parts = input().strip().split()  then int(parts[0], int(parts[1])) if converting.",
+                            "Or: tokens = sys.stdin.read().strip().split()  when there may be extra whitespace or multiple lines.",
+                            "Print only the number. No ‘The answer is’. Return type int unless the spec says a string.",
+                            "Switch to the Python tab next and copy homework for Soha."
+                        ],
+                        diagram: "stdin:  1A 16\\n\nparts = ['1A', '16']\nprint(int(parts[0], int(parts[1])))   # 26\n\n# never:\n# x = input('enter number:')",
+                        coachNote: "End class by watching Soha convert 2F 16 in the sandbox, then paste the homework into a .py file."
+                    )
                 ],
-                pythonPrompt: "Read two tokens. Convert the first numeral from the given base to decimal, then print it.",
+                pythonPrompt: "Contest 1 programming almost always starts with parsing tokens, then either converting a numeral or evaluating a small recursive rule. Teach both.",
                 pythonTemplate: """
                 import sys
 
                 def to_decimal(value: str, base: int) -> int:
                     return int(value.strip(), base)
 
+                def f(n: int) -> int:
+                    # f(0)=1, f(n)=n+f(n-1)  — same as the board table
+                    if n == 0:
+                        return 1
+                    return n + f(n - 1)
+
                 def solve() -> int:
                     data = sys.stdin.read().strip().split()
-                    numeral, base_s = data[0], data[1]
-                    return to_decimal(numeral, int(base_s))
+                    # Hidden test shapes you must handle:
+                    #   "1A 16"           → convert
+                    #   "4"               → just n for f(n)
+                    #   "convert 2F 16"   → skip a word, then numeral + base
+                    if data[0].lower() == "convert":
+                        return to_decimal(data[1], int(data[2]))
+                    if len(data) >= 2:
+                        return to_decimal(data[0], int(data[1]))
+                    return f(int(data[0]))
 
                 if __name__ == "__main__":
                     print(solve())
                 """,
                 pythonNotes: [
-                    "Never use input('prompt:') — hidden tests only see stdout of the answer.",
-                    "input().strip().split() tokenizes a line; sys.stdin.read().split() grabs all tokens.",
-                    "int(s, base) is the Python converter ACSL problems expect you to know.",
-                    "Return type must match the spec: int vs str. print() adds a newline HackerRank accepts."
+                    "input().strip() removes the newline. .split() with no args splits on any whitespace.",
+                    "int('1A', 16) is 26. int('77', 8) is 63. Never write your own hex map unless the problem forbids int().",
+                    "If the spec returns int, print(solve()) is enough. Do not print a list or a tuple.",
+                    "Recursion in Python needs a base case or you get RecursionError on hidden tests.",
+                    "Sample you should run locally: echo '2F 16' | python3 contest1.py   → 47",
+                    "Second sample: echo '4' | python3 contest1.py   → 11"
                 ],
                 homework: """
-                # Contest 1 homework — due before next practice
-                # 1) Convert 2F16, 778, and 1101102 to decimal on paper, then verify with int().
-                # 2) Trace f(5) where f(0)=2 and f(n)=n*f(n-1)+1.
-                # 3) HackerRank drill: parse "A 16" and print 10.
-
+                # Contest 1 homework for Soha
+                # PAPER (do first, then check in the app sandbox)
+                # N1. 1C16 → decimal
+                # N2. 1101112 → octal (grouping)
+                # N3. 5010 → hex (repeated divide)
+                # N4. 678 → binary
+                # N5. 10102 + 11112
+                # R1. f(0)=3, f(n)=2*f(n-1)-1. Find f(4).  (answer 33)
+                # R2. g(0)=0, g(1)=1, g(n)=g(n-1)+g(n-2)+1. Find g(5).  (12)
+                # B1. a,b=4,9; if a>b: a=a+1 elif a==b: a=0 else: b=b-a; print a,b
+                # B2. n=7; if n>10: n=n-10; if n>5: n=n-5; print n
+                #
+                # CODE — save as contest1.py and pipe stdin
                 import sys
 
                 def homework_convert() -> int:
@@ -777,36 +930,97 @@ private enum ContestCurriculum {
 
 private struct PresentationSlidesView: View {
     let syllabus: ContestSyllabus
+    @State private var slideIndex = 0
     @Environment(\.teachingScale) private var scale
     @Environment(\.presentationModeEnabled) private var presentation
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
-                ForEach(Array(syllabus.slides.enumerated()), id: \.offset) { index, slide in
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text("Slide \(index + 1) · \(slide.title)")
-                            .font(.system(size: 20 * scale, weight: .bold, design: .rounded))
-                        ForEach(slide.bullets, id: \.self) { bullet in
-                            HStack(alignment: .top, spacing: 8) {
-                                Text("•")
-                                Text(bullet)
-                                    .font(.system(size: (presentation ? 18 : 14) * scale))
-                                    .fixedSize(horizontal: false, vertical: true)
-                            }
-                        }
-                        Text(slide.diagram)
-                            .font(.system(size: (presentation ? 16 : 13) * scale, weight: .medium, design: .monospaced))
-                            .padding(12)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(Color.black.opacity(0.06), in: RoundedRectangle(cornerRadius: 10))
+        let slides = syllabus.slides
+        let index = min(max(slideIndex, 0), max(slides.count - 1, 0))
+        VStack(alignment: .leading, spacing: 0) {
+            HStack {
+                Button("Previous") { slideIndex = max(0, index - 1) }
+                    .disabled(index == 0)
+                Text("Slide \(index + 1) of \(max(slides.count, 1))")
+                    .font(.headline)
+                    .frame(minWidth: 140)
+                Button("Next") { slideIndex = min(slides.count - 1, index + 1) }
+                    .disabled(index >= slides.count - 1)
+                Spacer()
+                Picker("Jump", selection: $slideIndex) {
+                    ForEach(Array(slides.enumerated()), id: \.offset) { i, slide in
+                        Text("\(i + 1). \(slide.title)").tag(i)
                     }
-                    .padding(16)
-                    .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14))
+                }
+                .frame(maxWidth: 420)
+            }
+            .padding(.horizontal, 20)
+            .padding(.vertical, 10)
+
+            Divider()
+
+            if slides.isEmpty {
+                Text("No slides loaded for this contest.")
+                    .padding(24)
+            } else {
+                ScrollView {
+                    slideCard(slides[index], number: index + 1, total: slides.count)
+                        .padding(20)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    private func slideCard(_ slide: SlideCard, number: Int, total: Int) -> some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Text("\(number) / \(total)")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.secondary)
+            Text(slide.title)
+                .font(.system(size: 26 * scale, weight: .bold, design: .rounded))
+                .fixedSize(horizontal: false, vertical: true)
+
+            ForEach(Array(slide.bullets.enumerated()), id: \.offset) { _, bullet in
+                HStack(alignment: .top, spacing: 10) {
+                    Text("•")
+                        .font(.system(size: (presentation ? 20 : 16) * scale, weight: .bold))
+                    Text(bullet)
+                        .font(.system(size: (presentation ? 20 : 16) * scale))
+                        .foregroundStyle(.primary)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
             }
-            .padding(20)
+
+            if !slide.diagram.isEmpty {
+                Text(slide.diagram)
+                    .font(.system(size: (presentation ? 18 : 14) * scale, weight: .medium, design: .monospaced))
+                    .foregroundStyle(.primary)
+                    .textSelection(.enabled)
+                    .padding(14)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Color.primary.opacity(0.06), in: RoundedRectangle(cornerRadius: 10))
+            }
+
+            if !slide.coachNote.isEmpty {
+                Text("Coach script")
+                    .font(.caption.weight(.bold))
+                    .foregroundStyle(.orange)
+                Text(slide.coachNote)
+                    .font(.system(size: (presentation ? 18 : 15) * scale))
+                    .foregroundStyle(.orange)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
         }
+        .padding(20)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color(nsColor: .textBackgroundColor), in: RoundedRectangle(cornerRadius: 14))
+        .overlay(
+            RoundedRectangle(cornerRadius: 14)
+                .stroke(Color.primary.opacity(0.12), lineWidth: 1)
+        )
     }
 }
 
@@ -816,35 +1030,51 @@ private struct InteractiveSandboxView: View {
     let contest: Int
 
     var body: some View {
-        ScrollView {
-            Group {
-                switch contest {
-                case 1: Contest1Sandbox()
-                case 2: Contest2Sandbox()
-                case 3: Contest3Sandbox()
-                default: Contest4Sandbox()
+                ScrollView {
+                    Group {
+                        switch contest {
+                        case 1: Contest1Sandbox()
+                        case 2: Contest2Sandbox()
+                        case 3: Contest3Sandbox()
+                        default: Contest4Sandbox()
+                        }
+                    }
+                    .padding(20)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
-            }
-            .padding(20)
-        }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 
 private struct Contest1Sandbox: View {
     @State private var raw = "1A"
     @State private var fromBase = 16
+    @State private var addA = "1011"
+    @State private var addB = "0110"
+    @State private var addBase = 2
+    @State private var recKind = 0
     @State private var n = 4
+    @State private var a = 7
+    @State private var b = 3
     @Environment(\.teachingScale) private var scale
 
-    var body: some View {
-        VStack(alignment: .leading, spacing: 18) {
-            Text("Live converters")
-                .font(.system(size: 20 * scale, weight: .semibold))
+    private let recNames = [
+        "f(0)=1, f(n)=n+f(n-1)",
+        "f(0)=3, f(n)=2·f(n-1)−1",
+        "f(0)=2, f(n)=n·f(n-1)+1"
+    ]
 
-            HStack(alignment: .top, spacing: 16) {
-                VStack(alignment: .leading) {
-                    Text("Numeral")
-                    TextField("value", text: $raw)
+    var body: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            Text("Contest 1 live board")
+                .font(.system(size: 22 * scale, weight: .bold, design: .rounded))
+            Text("Project this tab. Change the numeral, then point at the place-value expansion so Soha sees every power.")
+                .font(.system(size: 13 * scale))
+                .foregroundStyle(.secondary)
+
+            GroupBox("1 · Converter + place value") {
+                VStack(alignment: .leading, spacing: 10) {
+                    TextField("numeral (e.g. 1A, 101101, 77)", text: $raw)
                     Picker("From base", selection: $fromBase) {
                         Text("2").tag(2)
                         Text("8").tag(8)
@@ -852,32 +1082,82 @@ private struct Contest1Sandbox: View {
                         Text("16").tag(16)
                     }
                     .pickerStyle(.segmented)
-                }
-                .frame(maxWidth: 280)
-
-                VStack(alignment: .leading, spacing: 6) {
                     conversionRow("Decimal", String(converted))
                     conversionRow("Binary", String(converted, radix: 2))
                     conversionRow("Octal", String(converted, radix: 8))
                     conversionRow("Hex", String(converted, radix: 16).uppercased())
+                    Text(placeValueExpansion)
+                        .font(.system(size: 13 * scale, design: .monospaced))
+                        .textSelection(.enabled)
                 }
-                .font(.system(size: 16 * scale, design: .monospaced))
             }
 
-            Divider()
-            Text("Recursion unwind · f(n) = n + f(n−1), f(0)=1")
-                .font(.headline)
-            Stepper("n = \(n)", value: $n, in: 0...8)
-            Text(recursionTrace(n))
-                .font(.system(size: 14 * scale, design: .monospaced))
-                .padding(12)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Color.primary.opacity(0.05), in: RoundedRectangle(cornerRadius: 10))
+            GroupBox("2 · Add in a base") {
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack {
+                        TextField("addend A", text: $addA)
+                        TextField("addend B", text: $addB)
+                    }
+                    Picker("Base", selection: $addBase) {
+                        Text("2").tag(2)
+                        Text("8").tag(8)
+                        Text("16").tag(16)
+                    }
+                    .pickerStyle(.segmented)
+                    Text(addInBase)
+                        .font(.system(size: 14 * scale, design: .monospaced))
+                }
+            }
+
+            GroupBox("3 · Recursion table") {
+                VStack(alignment: .leading, spacing: 8) {
+                    Picker("Definition", selection: $recKind) {
+                        ForEach(0..<recNames.count, id: \.self) { Text(recNames[$0]).tag($0) }
+                    }
+                    Stepper("n = \(n)", value: $n, in: 0...10)
+                    Text(recursionTable(kind: recKind, n: n))
+                        .font(.system(size: 13 * scale, design: .monospaced))
+                        .textSelection(.enabled)
+                }
+            }
+
+            GroupBox("4 · Branch tracer  if a>b: a=a-b  else: b=b-a  print(a,b)") {
+                VStack(alignment: .leading, spacing: 8) {
+                    Stepper("a = \(a)", value: $a, in: 0...20)
+                    Stepper("b = \(b)", value: $b, in: 0...20)
+                    Text(branchTrace(a: a, b: b))
+                        .font(.system(size: 14 * scale, design: .monospaced))
+                }
+            }
         }
+        .font(.system(size: 16 * scale, design: .monospaced))
     }
 
     private var converted: Int {
         Int(raw.trimmingCharacters(in: .whitespacesAndNewlines), radix: fromBase) ?? 0
+    }
+
+    private var placeValueExpansion: String {
+        let s = raw.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+        guard let parsed = Int(s, radix: fromBase) else {
+            return "Could not parse \(s) as base \(fromBase)."
+        }
+        var terms: [String] = []
+        for (i, ch) in s.reversed().enumerated() {
+            let d = Int(String(ch), radix: fromBase) ?? 0
+            let p = intPow(fromBase, i)
+            terms.append("\(ch)×\(fromBase)^\(i)=\(d * p)")
+        }
+        return terms.reversed().joined(separator: " + ") + " = \(parsed)₁₀"
+    }
+
+    private var addInBase: String {
+        let x = Int(addA.trimmingCharacters(in: .whitespacesAndNewlines), radix: addBase)
+        let y = Int(addB.trimmingCharacters(in: .whitespacesAndNewlines), radix: addBase)
+        guard let x, let y else { return "Parse error — check digits for base \(addBase)." }
+        let sum = x + y
+        let shown = String(sum, radix: addBase).uppercased()
+        return "\(addA)₍\(addBase)₎ + \(addB)₍\(addBase)₎ = \(shown)₍\(addBase)₎  (decimal \(x)+\(y)=\(sum))"
     }
 
     private func conversionRow(_ label: String, _ value: String) -> some View {
@@ -887,11 +1167,47 @@ private struct Contest1Sandbox: View {
         }
     }
 
-    private func recursionTrace(_ n: Int) -> String {
-        func f(_ k: Int) -> Int { k == 0 ? 1 : k + f(k - 1) }
-        var lines = (0...n).map { "f(\($0)) = \(f($0))" }
-        lines.append("Call stack: " + (0...n).reversed().map { "f(\($0))" }.joined(separator: " → "))
+    private func recursionTable(kind: Int, n: Int) -> String {
+        var lines = [" n | f(n)"]
+        var prev = 0
+        for k in 0...n {
+            let val: Int
+            switch kind {
+            case 1:
+                val = k == 0 ? 3 : 2 * prev - 1
+            case 2:
+                val = k == 0 ? 2 : k * prev + 1
+            default:
+                val = k == 0 ? 1 : k + prev
+            }
+            lines.append(String(format: "%2d | %d", k, val))
+            prev = val
+        }
+        lines.append("Asked f(\(n)) = \(prev)")
         return lines.joined(separator: "\n")
+    }
+
+    private func branchTrace(a startA: Int, b startB: Int) -> String {
+        var a = startA
+        var b = startB
+        var log = ["start a=\(a) b=\(b)"]
+        if a > b {
+            log.append("\(a) > \(b) True → take IF, skip else")
+            a = a - b
+            log.append("a = a-b → \(a)")
+        } else {
+            log.append("\(a) > \(b) False → skip IF, take ELSE")
+            b = b - a
+            log.append("b = b-a → \(b)")
+        }
+        log.append("print → \(a) \(b)")
+        return log.joined(separator: "\n")
+    }
+
+    private func intPow(_ base: Int, _ exp: Int) -> Int {
+        var r = 1
+        for _ in 0..<exp { r *= base }
+        return r
     }
 }
 
@@ -1192,6 +1508,7 @@ private struct PythonHackerRankSimulatorView: View {
             }
             .padding(20)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 

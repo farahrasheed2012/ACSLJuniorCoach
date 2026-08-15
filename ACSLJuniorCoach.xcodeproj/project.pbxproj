@@ -7,11 +7,13 @@
 
 /* Begin PBXBuildFile section */
 		A1B001 /* ACSLJuniorCoachApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2F001 /* ACSLJuniorCoachApp.swift */; };
+		A1B002 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A2F002 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		A0APP /* ACSLJuniorCoach.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ACSLJuniorCoach.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A2F001 /* ACSLJuniorCoachApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ACSLJuniorCoachApp.swift; sourceTree = "<group>"; };
+		A2F002 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -23,6 +25,7 @@
 			isa = PBXGroup;
 			children = (
 				A2F001 /* ACSLJuniorCoachApp.swift */,
+				A2F002 /* Assets.xcassets */,
 				A4PROD /* Products */,
 			);
 			sourceTree = "<group>";
@@ -82,7 +85,9 @@
 		A6RES /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
-			files = ();
+			files = (
+				A1B002 /* Assets.xcassets in Resources */,
+			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
@@ -133,6 +138,7 @@
 		AATDBG /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -154,6 +160,7 @@
 		AATREL /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
