@@ -2470,7 +2470,7 @@ private struct PresentationSlidesView: View {
             }
 
             if !slide.diagram.isEmpty {
-                Text(slide.diagram)
+                Text(slide.diagram.replacingOccurrences(of: "\\n", with: "\n"))
                     .font(.system(size: (presentation ? 18 : 14) * scale, weight: .medium, design: .monospaced))
                     .foregroundStyle(.primary)
                     .textSelection(.enabled)
