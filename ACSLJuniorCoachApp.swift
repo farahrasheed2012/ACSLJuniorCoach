@@ -265,7 +265,7 @@ private struct CoachDashboardView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("ACSL Junior Division · Season Tracker")
                 .font(.system(size: 28 * scale, weight: .bold, design: .rounded))
-            Text("Each contest: 6 short-answer questions (2 per topic, 5 points total) plus one 72-hour HackerRank program (5 points). Season max 40. Finals bar 24.")
+            Text("Junior (grade 9 and under): 30-minute paper of 6 questions (2 per topic, 5 pts) plus one 72-hour HackerRank program (5 pts). Season max 40. Finals bar 24.")
                 .font(.system(size: 14 * scale))
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -499,10 +499,10 @@ private enum ContestCurriculum {
                             "Skill 2: Recursion. A recipe that says ‘use a smaller version of me’ until a stopping rule.",
                             "Skill 3: Branch tracing. Follow an if/else program like a choose-your-own-adventure. Never skip lines. Never guess.",
                             "You will also write one Python program on HackerRank. You get about 72 hours after the short-answer. Hidden tests grade exact print output.",
-                            "We meet once a week for 1.5 hours, plus about 1 hour of homework. Eight weeks, starting Monday August 17.",
+                            "Junior Division: no student beyond grade 9. Short-answer is 30 minutes online. We meet once a week for 1.5 hours, plus about 1 hour of homework.",
                             "Goal today: convert a number on paper AND in Python, fill a recursion table AND write def f(n), trace an if-program AND run it."
                         ],
-                        diagram: "Short-answer paper: 6 questions, 2 from EACH topic\n  (number systems, recursion, branching)     5 pts\nProgramming: 1 HackerRank problem, ~72 hours  5 pts\nTogether this contest:                         10 pts",
+                        diagram: "Paper: 6 questions, 2 per topic, 30 minutes, 5 pts\nProgram: 1 HackerRank problem, ~72 hours, 5 pts\nJunior: grade 9 and under\nTogether: 10 pts this contest",
                         coachNote: "Say this slowly: we are not learning ‘all of computer science.’ We are learning three contest tricks. Write NUMBER SYSTEMS / RECURSION / IF-ELSE on the board and leave them up."
                     ),
                     SlideCard(
@@ -632,11 +632,12 @@ private enum ContestCurriculum {
                         title: "Week 2 · Aug 24 · meeting (90 min) · bases + int()",
                         bullets: [
                             "0:00–0:15  Homework share: 12 vs 102. Spot-check the 6-line file.",
-                            "0:15–0:55  Place value as bundle size. Four bases. Hex A=10…F=15. Convert TO decimal with a power row. Several examples.",
+                            "0:15–0:40  Meet each base as its own world: binary lights, octal 0–7, hex A–F. Do nows. No long recipe yet.",
+                            "0:40–0:55  Only then: power-row convert TO decimal. 1A and 2F.",
                             "0:55–1:25  Lab: int('7'), int('1A', 16), int('1011', 2), int('77', 8). Check every answer on paper first.",
                             "1:25–1:30  Week 2 homework."
                         ],
-                        diagram: "Success tonight:\\n  power row under every numeral\\n  1A16 = 26 on paper AND int('1A',16)\\n  can reject 18 as octal",
+                        diagram: "Success tonight:\\n  count 0–16 in binary\\n  10₈ is 8, 10₁₆ is 16, F is 15\\n  then 1A₁₆ = 26 on paper AND int('1A',16)",
                         coachNote: "Keep a hex strip on the table all season."
                     ),
                     SlideCard(
@@ -651,9 +652,151 @@ private enum ContestCurriculum {
                         diagram: "Everyday:  3  4  7\nBundles:  100 10  1     (×10 each step left)\n\nBinary:    1  0  1  1\nBundles:   8  4  2  1     (×2 each step left)\nValue: 8+0+2+1 = 11 in everyday numbers",
                         coachNote: "Have students hold up fingers: ‘Show me a legal binary digit.’ Only 0 or 1. Then: ‘Is 18 in octal legal?’ No — 8 is not allowed in base 8."
                     ),
+                                        SlideCard(
+                        title: "Why computers even have other number systems",
+                        bullets: [
+                            "A computer wire is either ON or OFF. That is one bit: 1 or 0. There is no ‘maybe 7’ on a single wire.",
+                            "So the machine’s native language is binary (base 2). Long strings of 0s and 1s are ugly for humans: 10000001111000101100 is one number.",
+                            "Octal (base 8) and hex (base 16) are shorthand for those bits. One octal digit stands for 3 bits. One hex digit stands for 4 bits. We will use that later — tonight just know WHY they exist.",
+                            "Decimal (base 10) is still how we talk to each other. ACSL will bounce among all four costumes of the SAME number.",
+                            "We will meet each base as its own world before we convert anything. Do not skip ahead to the recipe."
+                        ],
+                        diagram: "One wire:   OFF=0   ON=1     (a bit)\nThree wires: 000,001,010,011,100,101,110,111\n             eight patterns = one octal digit 0–7\nFour wires:  16 patterns = one hex digit 0–F",
+                        coachNote: "Lights or fingers: three students hold 0/1. Count 0 to 7 out loud. That IS octal, they just do not know the name yet."
+                    ),
                     SlideCard(
+                        title: "Decimal (base 10) — the one you already speak",
+                        bullets: [
+                            "Ten digit symbols: 0 1 2 3 4 5 6 7 8 9. After 9 you make a new bundle of ten and write 10.",
+                            "Places from the right: ones, tens, hundreds, thousands… Each step left is ×10.",
+                            "347 = 3×100 + 4×10 + 7×1. You have done this since 2nd grade.",
+                            "ACSL still writes 347₁₀ when they want to shout ‘this one is everyday.’ If there is no subscript, assume decimal.",
+                            "Every other base copies THIS idea. Only the bundle size and the allowed digits change."
+                        ],
+                        diagram: "  3    4    7\n 100   10    1     places (powers of 10)\n 300 + 40 +  7  = 347\n\nPowers of 10: 1, 10, 100, 1000, 10000…",
+                        coachNote: "Write 347 with boxes. We will draw the same boxes for binary next, just with 8 4 2 1."
+                    ),
+                    SlideCard(
+                        title: "Binary (base 2) — only 0 and 1, the computer’s alphabet",
+                        bullets: [
+                            "Two digit symbols only: 0 and 1. Nickname: bits (binary digits). 2 is ILLEGAL in binary. 1012₂ is not a number — it has a 2.",
+                            "After you run out of symbols you bundle: 1, then 10 (that is two), then 11 (three), then 100 (four). It looks like you skipped, but you did not. You just have no digit 2.",
+                            "Places from the right: 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024… Each step left is ×2. Memorize at least through 256 this week.",
+                            "A 1 means ‘use this place.’ A 0 means ‘skip this place.’ 1011₂ = 8+0+2+1 = eleven.",
+                            "Reading aloud: say ‘one zero one one, base two,’ not ‘one thousand eleven.’ It is not a decimal look-alike."
+                        ],
+                        diagram: "Count in binary (stay here until this feels boring):\n0=0    1=1    2=10   3=11\n4=100  5=101  6=110  7=111\n8=1000 9=1001 10=1010 11=1011\n12=1100 13=1101 14=1110 15=1111  16=10000\n\nPlaces:  … 16  8  4  2  1",
+                        coachNote: "Chorus count 0–16 in binary. If they rush, stop at 8=1000 and rebuild 4,2,1 with fingers."
+                    ),
+                    SlideCard(
+                        title: "Binary — live with 8 4 2 1 before any converting recipe",
+                        bullets: [
+                            "Draw four boxes labeled 8, 4, 2, 1. Drop a 1 or 0 in each box. That is a 4-bit number.",
+                            "1000₂ is 8. 0100₂ is 4. 0010₂ is 2. 0001₂ is 1. Those four ‘pure’ numbers are the whole system.",
+                            "Mix them: 1101₂ = 8+4+0+1 = 13. 0110₂ = 4+2 = 6. 1111₂ = 8+4+2+1 = 15 (all lights on).",
+                            "Five bits adds a 16s box on the left: 10000₂ = 16. 10110₂ = 16+4+2 = 22.",
+                            "We are still not ‘converting’ as a recipe. We are reading a panel of lights."
+                        ],
+                        diagram: "  8  4  2  1     lights\n  1  0  1  1     on off on on\n  8 +0 +2 +1  = 11\n\n  1  1  0  1  = 8+4+1 = 13\n  0  1  1  1  = 4+2+1 = 7\n  1  0  0  0  = 8",
+                        coachNote: "Physical: four index cards 8/4/2/1. Flip face-up for 1. Build 13, then 7, then 16 with a fifth card."
+                    ),
+                    SlideCard(
+                        title: "Do now · binary only (2 min)",
+                        bullets: [
+                            "No octal, no hex yet. Lights only.",
+                            "Q1. What everyday number is 1100₂?",
+                            "Q2. What everyday number is 10000₂?",
+                            "Q3. Is 102₂ a legal binary numeral? Why?"
+                        ],
+                        diagram: "Q1  8+4=12\\nQ2  16\\nQ3  NO — digit 2 is not allowed in base 2",
+                        coachNote: "If Q1 comes back 1100, they read it as decimal. Say the places out loud with them."
+                    ),
+                    SlideCard(
+                        title: "Octal (base 8) — digits 0 through 7, bundles of eight",
+                        bullets: [
+                            "Eight digit symbols: 0 1 2 3 4 5 6 7. There is no 8 and no 9 in octal. 18₈ is illegal. 17₈ is fine.",
+                            "You bundle when you hit eight, not ten. After 7₈ comes 10₈, which is eight in everyday numbers — not ten.",
+                            "Places from the right: 1, 8, 64, 512, 4096. Each step left is ×8. (1, then 8, then 64…)",
+                            "Why octal exists: 8 is 2×2×2, so one octal digit is exactly three bits. 7₈ = 111₂. 5₈ = 101₂. We use that as a speed trick later.",
+                            "Read 77₈ as ‘seven seven, base eight,’ then think 7 eights and 7 ones = 56+7=63 everyday — but that thought comes AFTER you know the digits."
+                        ],
+                        diagram: "Octal count (everyday value in parentheses):\n0 1 2 3 4 5 6 7   then 10₈ (=8)  11₈ (=9)  12₈ (=10)\n… 17₈ (=15)  20₈ (=16)\n\nPlaces:  … 512  64  8  1\n\nLegal?  8₈  NO     70₈  YES     19₈  NO",
+                        coachNote: "Quiz ‘what comes after 7 in octal?’ They must say 10, not 8. Write 10₈ = 8₁₀ on the board and leave it."
+                    ),
+                    SlideCard(
+                        title: "Octal — sit with a two-digit number before converting lists",
+                        bullets: [
+                            "A two-digit octal number  ab₈  means a eights and b ones. a and b are each 0–7.",
+                            "10₈ = 1×8 + 0 = 8.  20₈ = 16.  30₈ = 24. The left digit is ‘how many eights.’",
+                            "17₈ = 1×8 + 7 = 15.  77₈ = 7×8 + 7 = 63.  12₈ = 8+2 = 10.",
+                            "Three digits add a 64s place: 100₈ = 64.  101₈ = 65.  777₈ = 7×64 + 7×8 + 7 = 511.",
+                            "Still no long recipe. If you can say ‘this is 3 eights and 2 ones,’ you understand octal."
+                        ],
+                        diagram: "  7  7₈\n  8  1     places\n 56 +7  = 63₁₀\n\n  1  0  1₈\n 64  8  1\n 64 +0 +1 = 65₁₀\n\nEach octal digit 0–7 as 3 bits (preview):\n0=000 1=001 2=010 3=011\n4=100 5=101 6=110 7=111",
+                        coachNote: "Have Soha invent a legal 2-digit octal and say it in English before anyone multiplies."
+                    ),
+                    SlideCard(
+                        title: "Do now · octal only (2 min)",
+                        bullets: [
+                            "Q1. What everyday number is 10₈? (Trap: it looks like ten.)",
+                            "Q2. What everyday number is 25₈?",
+                            "Q3. Circle the illegal one: 16₈    18₈    70₈"
+                        ],
+                        diagram: "Q1  8   (one eight, zero ones)\\nQ2  2×8+5=21\\nQ3  18₈ is illegal (digit 8)",
+                        coachNote: "Celebrate if they say 8 for Q1. That is the whole lesson."
+                    ),
+                    SlideCard(
+                        title: "Hexadecimal (base 16) — we ran out of digits, so we use letters",
+                        bullets: [
+                            "Sixteen symbols. 0–9 are the same. Then A=10, B=11, C=12, D=13, E=14, F=15. There is no G.",
+                            "Why letters: we need single characters for ten through fifteen. A is the first letter, so A is ten. F is the sixth letter after 9, so F is fifteen.",
+                            "You bundle when you hit sixteen. After F₁₆ comes 10₁₆, which is sixteen in everyday numbers — not ten.",
+                            "Places from the right: 1, 16, 256, 4096, 65536. Each step left is ×16.",
+                            "Lowercase a–f means the same as A–F. ACSL usually prints uppercase. You may write either unless the sample uses one style."
+                        ],
+                        diagram: "Hex digits (write this strip and keep it all season):\n0 1 2 3 4 5 6 7 8 9  A  B  C  D  E  F\n0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15\n\nAfter F comes 10₁₆ (=16₁₀)\n11₁₆ = 17₁₀    1F₁₆ = 31₁₀    20₁₆ = 32₁₀",
+                        coachNote: "Point at F until they say fifteen. Point at 10 hex until they say sixteen. Do not move on until both are automatic."
+                    ),
+                    SlideCard(
+                        title: "Hex — two-digit numbers and ‘what is F worth?’",
+                        bullets: [
+                            "A two-digit hex number  xy₁₆  means x sixteens and y ones. Change letters to 10–15 BEFORE multiplying.",
+                            "10₁₆ = 16.  20₁₆ = 32.  A0₁₆ = 10×16 = 160.  The left digit is ‘how many sixteens.’",
+                            "1A₁₆ = 1×16 + 10 = 26.  2F₁₆ = 2×16 + 15 = 47.  FF₁₆ = 15×16 + 15 = 255.",
+                            "One hex digit is a number 0–15. C₁₆ is just 12. That is why hex is a nice costume for four bits: 15 = 1111₂ = F₁₆.",
+                            "Say every hex numeral in English once: ‘2F is two sixteens and fifteen ones.’ Then, and only then, multiply."
+                        ],
+                        diagram: "  2  F₁₆\n 16  1\n 32 +15 = 47₁₀\n\n  1  A₁₆\n 16  1\n 16 +10 = 26₁₀\n\n  F  F₁₆\n 16  1\n240 +15 = 255₁₀\n\nEach hex digit as 4 bits (preview):\n9=1001  A=1010  B=1011\nC=1100  D=1101  E=1110  F=1111",
+                        coachNote: "Freeze on F=15. If they multiply 2×16+F as ‘2×16+F’ they are not ready for the conversion recipe."
+                    ),
+                    SlideCard(
+                        title: "Do now · hex only (2 min)",
+                        bullets: [
+                            "Hex strip on the desk. No rushing to Python.",
+                            "Q1. What is F worth in everyday numbers?",
+                            "Q2. What everyday number is 10₁₆?",
+                            "Q3. What everyday number is 1C₁₆? (C is 12.)",
+                            "Q4. Illegal or legal: 1G₁₆"
+                        ],
+                        diagram: "Q1  15\\nQ2  16   (not ten)\\nQ3  16+12=28\\nQ4  illegal — no G",
+                        coachNote: "Q2 is the octal trap in a new costume. Same joke: 10 in base b is b itself."
+                    ),
+                    SlideCard(
+                        title: "The four costumes of one number — look, do not convert yet",
+                        bullets: [
+                            "Pick the everyday number 15. Binary costume 1111₂ (four lights on: 8+4+2+1). Octal costume 17₈ (one eight and seven). Hex costume F₁₆ (one digit, fifteen).",
+                            "Pick 16. Binary 10000₂. Octal 20₈. Hex 10₁₆. Decimal 16. Four outfits, one person.",
+                            "Pick 10 decimal. Binary 1010₂. Octal 12₈. Hex A₁₆. Notice 10₈ is NOT this number — 10₈ is eight.",
+                            "Rule you can chant: ‘10 in base b means b.’ 10₂=2, 10₈=8, 10₁₀=10, 10₁₆=16.",
+                            "NOW we are ready for a conversion recipe. Until this slide, the job was to know each world."
+                        ],
+                        diagram: "15 = 1111₂ = 17₈ = F₁₆\n16 = 10000₂ = 20₈ = 10₁₆\n10 = 1010₂ = 12₈ = A₁₆\n 8 = 1000₂ = 10₈ = 8₁₆\n\nChant: 10 in base b equals b.",
+                        coachNote: "Sticky notes: four labels, same 15. Then ask 10₈ vs 10₁₆ before the recipe slide."
+                    ),
+SlideCard(
                         title: "The four bases ACSL uses — cheat sheet",
                         bullets: [
+                            "You already met each world. This is the fridge-magnet version for the pencil case.",
                             "Base 2, binary: digits 0,1. Nickname: bits. Looks like 101101₂.",
                             "Base 8, octal: digits 0,1,2,3,4,5,6,7. Looks like 77₈. If you see an 8 or 9, it cannot be octal.",
                             "Base 10, decimal: digits 0–9. This is normal school math. Looks like 47 or 47₁₀.",
@@ -667,6 +810,7 @@ private enum ContestCurriculum {
                     SlideCard(
                         title: "How to convert TO everyday numbers (place-value steps)",
                         bullets: [
+                            "Now the recipe. Same boxes you already used: write places, multiply, add. This works in every base.",
                             "Step 1: Write the digits in a row.",
                             "Step 2: Under the RIGHTMOST digit write 1. That is the ones place (base⁰ is always 1).",
                             "Step 3: Moving left, multiply the place by the base each time. Base 16: 1, then 16, then 256. Base 2: 1, 2, 4, 8, 16, 32…",
@@ -689,6 +833,17 @@ private enum ContestCurriculum {
                         ],
                         diagram: "Same value, three costumes:\n  15 in decimal  =  17 in octal  =  F in hex  =  1111 in binary\n\nCheck binary 1111: 8+4+2+1 = 15. Yes.",
                         coachNote: "Physical prop: three sticky notes that all say 15, labeled 15₁₀ / 17₈ / F₁₆. ‘Different outfits, same person.’"
+                    ),
+                    SlideCard(
+                        title: "Do now · convert to decimal (2 min)",
+                        bullets: [
+                            "Silent. Place row under the digits. Then check the gray box.",
+                            "Q1. 10110₂ to decimal.",
+                            "Q2. 2C₁₆ to decimal. (C is 12.)",
+                            "Q3. 15₈ to decimal, then write that value as hex."
+                        ],
+                        diagram: "Q1  16+4+2=22\nQ2  2×16+12=44\nQ3  1×8+5=13 = D₁₆",
+                        coachNote: "Cover the gray box. Hands down. Then reveal."
                     ),
                     SlideCard(
                         title: "Python: variables and int() — putting a number in a box",
@@ -812,6 +967,16 @@ private enum ContestCurriculum {
                         coachNote: "Have Soha convert 45 on paper then count with a finger. Then run the one-liner."
                     ),
                     SlideCard(
+                        title: "Do now · hex↔octal and bit count (3 min)",
+                        bullets: [
+                            "Q1. Convert 3C₁₆ to octal using the binary bridge.",
+                            "Q2. How many 1s in the binary of 26?",
+                            "Q3. Write 47 as hex with no 0x prefix."
+                        ],
+                        diagram: "Q1  3=0011, C=1100 → 00111100 → 74₈\nQ2  26=11010₂ → three 1s → 3\nQ3  2F",
+                        coachNote: "Cover the gray box. Hands down. Then reveal."
+                    ),
+                    SlideCard(
                         title: "How to write the short-answer (so the grader marks it)",
                         bullets: [
                             "Write only what the blank asks. No 0b, 0o, 0x prefixes. No Python quotes.",
@@ -847,7 +1012,7 @@ private enum ContestCurriculum {
                         diagram: "Hex:   2 0₁₆\n      − 1 A₁₆\n      -------\n        6₁₆     because 32−26=6\n\nBinary: 1 0 1 0     (10)\n      −     1 1     ( 3)\n      ---------     ---\n        1 1 1       ( 7)",
                         coachNote: "If borrowing melts them, bless the decimal bridge. Speed comes later; correctness first."
                     ),
-                                        SlideCard(
+                    SlideCard(
                         title: "Contest shape: multiply in another base (ACSL does this; no division)",
                         bullets: [
                             "ACSL Computer Number Systems includes addition, subtraction, AND multiplication in other bases. They do not ask you to divide in another base.",
@@ -872,6 +1037,27 @@ private enum ContestCurriculum {
                         coachNote: "Say ‘the point is a fence, not a decimal.’ Quiz 0.1₂ until they say one-half, not one-tenth."
                     ),
                     SlideCard(
+                        title: "Contest shape: hex colors (#FF0000) — same hex, a picture",
+                        bullets: [
+                            "Wiki: screens mix red, green, blue. Each channel is two hex digits, 00 to FF, meaning 0 to 255.",
+                            "#FF0000 is red (255, 0, 0). #00FF00 green. #0000FF blue. #000000 black. #FFFFFF white.",
+                            "Salmon #FA8072: FA=250, 80=128, 72=114. Convert each pair as two hex digits.",
+                            "If ACSL asks the decimal of FF16, that is 15 times 16 plus 15 = 255 — same arithmetic as number systems."
+                        ],
+                        diagram: "#FF0000  red   (255, 0, 0)\n#00FF00  green\n#0000FF  blue\nFF16 = 255 shades per channel",
+                        coachNote: "One conversion, then move on. Do not teach CSS."
+                    ),
+                    SlideCard(
+                        title: "Do now · arithmetic in other bases (3 min)",
+                        bullets: [
+                            "Q1. 12₈ × 5₈. Check in decimal.",
+                            "Q2. 0.11₂ as a decimal fraction.",
+                            "Q3. What decimal is the red channel of #FF0000?"
+                        ],
+                        diagram: "Q1  62₈  (10×5=50, 6×8+2=50)\nQ2  0.75\nQ3  255",
+                        coachNote: "Cover the gray box. Hands down. Then reveal."
+                    ),
+                    SlideCard(
                         title: "Drill until automatic: bits, octal triples, hex nybbles, powers",
                         bullets: [
                             "Octal digit → exactly 3 bits. Say them until they are songs: 0=000, 1=001, 2=010, 3=011, 4=100, 5=101, 6=110, 7=111.",
@@ -884,7 +1070,7 @@ private enum ContestCurriculum {
                         diagram: "Octal 3-bit:  0=000 1=001 2=010 3=011\n               4=100 5=101 6=110 7=111\nHex 4-bit:     A=1010 B=1011 C=1100\n               D=1101 E=1110 F=1111\n2^n: 1 2 4 8 16 32 64 128 256 512 1024 2048 4096",
                         coachNote: "Flashcard 90 seconds every Week 2–4 homework check. No notes. Speed is a contest point."
                     ),
-SlideCard(
+                    SlideCard(
                         title: "Week 3 homework · ~1 hour (due Sep 7)",
                         bullets: [
                             "Paper (30 min): 45→binary, 50→hex, 101101₂→octal by grouping, 1011₂+0110₂, 12₈×5₈, 0.11₂ to decimal.",
@@ -918,6 +1104,18 @@ SlideCard(
                         ],
                         diagram: "Answers (reveal after they try):\n1) 1×16 + 12 = 28\n2) 110 111 → 6 7 → 67₈\n3) 50÷16 = 3 r 2 → 32₁₆\n4) 110 111₂\n5) 10+15=25 → 11001₂   (or binary add: 1010+1111=11001)",
                         coachNote: "Do not move to recursion until at least 4/5 are right. Use Interactive Sandbox to check live so it feels like a lab, not a lecture."
+                    ),
+                    SlideCard(
+                        title: "Contest shape: counting in two bases at once",
+                        bullets: [
+                            "Wiki sample: how many numbers from 100 to 200 (decimal) have distinct ascending digits AND distinct ascending hex digits?",
+                            "Ascending means each digit is bigger than the one on its left: 123 yes, 132 no, 122 no (not distinct).",
+                            "Method: list candidates with ascending decimal digits in 100 to 200, convert each to hex, check hex digits too.",
+                            "Wiki answer: 13 numbers. List, do not memorize: 123 (7B) through 127 (7F), 137-139, 156-159, 189 (BD).",
+                            "This is still number systems: convert, then look at digits. Slow and neat beats clever."
+                        ],
+                        diagram: "12310 = 7B16   both ascending\n13210 = 8416   decimal not ascending\nWiki count in 100..200: 13",
+                        coachNote: "Do 123 and 189 as a class. The full list is optional stretch, not Week 3 required."
                     ),
                     SlideCard(
                         title: "Python: input().strip().split() — how the grader talks to your program",
@@ -966,7 +1164,7 @@ SlideCard(
                         diagram: "n = int(input().strip())\nif n % 2 == 0:\n    n = n // 2\nelse:\n    n = 3 * n + 1\nprint(n)\n\n# 5 → 16    10 → 5\n\na, b = map(int, input().split())\nif a > b:\n    print(a)\nelif b > a:\n    print(b)\nelse:\n    print(0)",
                         coachNote: "After conversion labs, do these two as a palate cleanser so they do not freeze when HackerRank is not a base conversion."
                     ),
-                                        SlideCard(
+                    SlideCard(
                         title: "Contest shape: the programming problem is 72 hours, not 5 mini-tests in the room",
                         bullets: [
                             "Junior Contest 1 short-answer is a sitting of 6 questions. The Python problem is SEPARATE: one HackerRank problem, about 72 hours to submit.",
@@ -978,7 +1176,7 @@ SlideCard(
                         diagram: "Paper day:  6 questions, 2 per topic, 5 pts\nThen ~72 hours: 1 program on HackerRank, 5 pts\n\nThis app’s Python tab = practice the hidden-test habit.",
                         coachNote: "Do not scare them with 72 hours of coding. It is one problem, started the evening of the paper."
                     ),
-SlideCard(
+                    SlideCard(
                         title: "Python: % means remainder — even, odd, last digit",
                         bullets: [
                             "% is not percent here. a % b is the remainder when a is divided by b.",
@@ -1057,6 +1255,17 @@ SlideCard(
                         ],
                         diagram: "Table: n 0 1 2 3 4 5 6 7\n     f 1 2 4 7 11 16 22 29\n\nf(f(3)) = f(7) = 29\nf(f(0)) = f(1) = 2\nf(f(1)) = f(2) = 4",
                         coachNote: "Have them compute f(3) out loud, write 7 on a sticky, then look up f(7). Physical two steps."
+                    ),
+                    SlideCard(
+                        title: "Do now · nested f(f(n)) (3 min)",
+                        bullets: [
+                            "f(0)=1, f(n)=n+f(n-1). Fill the table through 6 first.",
+                            "Q1. f(4)",
+                            "Q2. f(f(2))  — inside first.",
+                            "Q3. f(f(3))"
+                        ],
+                        diagram: "Table n=0..6: 1,2,4,7,11,16,22\nQ1 11\nQ2 f(2)=4, f(4)=11\nQ3 f(3)=7, f(7)=29",
+                        coachNote: "Cover the gray box. Hands down. Then reveal."
                     ),
                     SlideCard(
                         title: "Contest shape: pattern / stage recursion (drawings)",
@@ -1152,7 +1361,7 @@ SlideCard(
                         diagram: "Grid (x down, y across). Edges are 1:\n       y=0  y=1  y=2\n x=0    1    1    1\n x=1    1    2    3     ← 1+1=2, then 2+1=3\n x=2    1    3    6     ← 1+2=3, then 3+3=6",
                         coachNote: "Project the empty grid. Fill it with the class like a tiny KenKen. Never let them recurse two arguments in their head."
                     ),
-                                        SlideCard(
+                    SlideCard(
                         title: "Contest shape: named recipes — factorial and Fibonacci",
                         bullets: [
                             "ACSL recursive-functions wiki starts with names you may hear: factorial and Fibonacci. Same table method.",
@@ -1175,6 +1384,17 @@ SlideCard(
                         diagram: "g(7)=g(4)+1\n    =g(1)+1+1\n    =g(-2)+1+1+1\n    =-6 + 3 = -3\n\nNegative x is allowed. 3x can be negative. That is the answer."
                     ),
                     SlideCard(
+                        title: "Contest shape: three bands — wiki h(13)=4",
+                        bullets: [
+                            "Wiki: h(x)=h(x-7)+1 if x>5; h(x)=x if 0<=x<=5; h(x)=h(x+3) if x<0.",
+                            "h(13): 13>5 so h(6)+1. 6>5 so h(-1)+1. -1<0 so h(2). 2 is in 0 to 5 so h(2)=2.",
+                            "Back up: h(-1)=2, h(6)=3, h(13)=4.",
+                            "When x is negative you ADD to climb toward the middle band. When x is large you SUBTRACT."
+                        ],
+                        diagram: "h(13)=h(6)+1\n     =h(-1)+1+1\n     =h(2)+1+1\n     =2+2=4",
+                        coachNote: "Three volunteers: big x, middle x, negative x. Each names the band first."
+                    ),
+                    SlideCard(
                         title: "Contest shape: two arguments the ACSL way — f(x-y, y-1)+2",
                         bullets: [
                             "Wiki sample: f(x,y) = f(x-y, y-1)+2  if x>y,  else  x+y.",
@@ -1185,6 +1405,27 @@ SlideCard(
                         ],
                         diagram: "f(5,3) → f(2,2)+2\n2>2? No. f(2,2)=4\nso f(5,3)=6\n\nChain: (5,3) → (2,2) STOP 4, then +2.",
                         coachNote: "Do f(5,3) as a class. Do NOT start f(6,2) until 5,3 is automatic — that one chains longer."
+                    ),
+                    SlideCard(
+                        title: "Contest shape: wiki two-arg f(12,6)=9",
+                        bullets: [
+                            "Same rule: f(x,y)=f(x-y,y-1)+2 if x>y, else x+y.",
+                            "f(12,6): 12>6 so f(6,5)+2. 6>5 so f(1,4)+2. 1>4 false, f(1,4)=5.",
+                            "Back up: f(6,5)=7, f(12,6)=9.",
+                            "Chain of pairs: (12,6) to (6,5) to (1,4) STOP 5, then +2 twice."
+                        ],
+                        diagram: "(12,6) -> (6,5) -> (1,4)\n1+4=5\n+2 +2 = 9",
+                        coachNote: "After f(5,3)=6, this is the official wiki sample."
+                    ),
+                    SlideCard(
+                        title: "Do now · harder recursion (4 min)",
+                        bullets: [
+                            "Q1. g(x)=g(x-3)+1 if x>0 else 3x. Find g(4).",
+                            "Q2. Same three-band h as the wiki. Find h(6).",
+                            "Q3. f(x,y)=f(x-y,y-1)+2 if x>y else x+y. Find f(5,3)."
+                        ],
+                        diagram: "Q1 g(4)=-4\nQ2 h(6)=3\nQ3 6",
+                        coachNote: "Cover the gray box. Hands down. Then reveal."
                     ),
                     SlideCard(
                         title: "Contest shape: paint-the-square recursion (geometry)",
@@ -1198,7 +1439,7 @@ SlideCard(
                         diagram: "Side 16: paint 1 square area 64.  3 left.\nSide  8: paint 3 squares area 16 → 48.\nSide  4: paint 9 squares area  4 → 36.\nSide  2: paint 27 squares area 1 → 27.\nTotal painted 64+48+36+27 = 175.\n(Unpainted tiny remainder is 0 at side 1 if the rule paints the last 1s — wiki total 175.)",
                         coachNote: "Draw the first split on the board. The 175 is a famous ACSL sample — if they memorize 175 without the table, they will miss a different side length."
                     ),
-SlideCard(
+                    SlideCard(
                         title: "Try these three — recursion (do now)",
                         bullets: [
                             "A) f(0)=3, f(n)=2×f(n−1)−1. Find f(4). Write every row 0 through 4.",
@@ -1255,7 +1496,7 @@ SlideCard(
                         diagram: "a := 7\nb := 3\nif a > b then\n    a := a - b\nelse\n    b := b - a\nendif\noutput a, b\n\nSame as Python if/else. Trace: 7>3, a=4, skip else. Output 4 3.",
                         coachNote: "Translate one ACSL block into Python on the board so they see they already know it."
                     ),
-                                        SlideCard(
+                    SlideCard(
                         title: "Contest shape: ACSL operators and built-in functions (WDTTPD)",
                         bullets: [
                             "From the ACSL ‘What Does This Program Do?’ wiki — Junior Contest 1 branching uses these, NOT loops or arrays.",
@@ -1281,7 +1522,30 @@ SlideCard(
                         diagram: "h := 50\nr := 10\nIF h > 48 THEN\n    r := r + 5\nEND IF\nIF h > 40 THEN\n    r := r + (h - 40) * 2\nEND IF\nOUTPUT r\n\n→ 35",
                         coachNote: "This is THE two-if trap with a story. Act it: bonus for over 48, then overtime dollars for hours past 40."
                     ),
-SlideCard(
+                    SlideCard(
+                        title: "Contest shape: wiki overtime payroll (answer 560)",
+                        bullets: [
+                            "Official WDTTPD sample is a full paycheck. Hours 50, rate 10, b starts at 0.",
+                            "IF h>48 THEN b = b+(h-48)*2*r and set h=48. Double for hours past 48.",
+                            "IF h>40 THEN b = b+(h-40)*(3/2)*r and set h=40. Time-and-a-half for 40-48.",
+                            "Then b = b + h*r pays straight time for the remaining 40.",
+                            "Trace: b=40 h=48; then b=160 h=40; then +400. Total 560.",
+                            "ACSL / is real divide: 3/2=1.5. Both IFs run, and they CHANGE h for the next test."
+                        ],
+                        diagram: "b   h\n0   50\n40  48\n160 40\n560 40\nOUTPUT 560",
+                        coachNote: "Mini +5 version first in Week 7. This 560 table in Week 8 if they are ready."
+                    ),
+                    SlideCard(
+                        title: "Do now · two IFs and payroll (4 min)",
+                        bullets: [
+                            "Q1. Mini: h=50, r=10. IF h>48 THEN r:=r+5. IF h>40 THEN r:=r+(h-40)*2. Final r?",
+                            "Q2. a:=4, b:=9. IF a>b THEN a:=a+1 ELSE b:=b-a. OUTPUT a,b.",
+                            "Q3. Full wiki payroll (h=50, r=10). Final b?"
+                        ],
+                        diagram: "Q1 35\nQ2 4 5\nQ3 560",
+                        coachNote: "Cover the gray box. Hands down. Then reveal."
+                    ),
+                    SlideCard(
                         title: "elif means ‘else if’ — still only ONE winner",
                         bullets: [
                             "if / elif / else is a chain. The computer checks from the top. The FIRST true condition wins. The rest are ignored.",
@@ -1488,27 +1752,199 @@ SlideCard(
         case 2:
             return ContestSyllabus(
                 contest: 2,
-                title: "Contest 2 — Prefix/Postfix, Bit Flicking, Loop Tracing",
-                topics: ["Prefix / Postfix", "Bit Flicking", "Loop Tracing"],
+                title: "Contest 2 — Prefix/Infix/Postfix, Bit-String Flicking, Looping",
+                topics: ["Prefix / Infix / Postfix", "Bit-String Flicking", "WDTTPD Looping"],
                 slides: [
-                    SlideCard(title: "Prefix & Postfix", bullets: [
-                        "Infix: operator between operands (A + B). Prefix: + A B. Postfix: A B +.",
-                        "Postfix evaluation uses a stack: push numbers; on operator, pop two, push result.",
-                        "Prefix is evaluated right-to-left with the same stack idea.",
-                        "ACSL uses single-letter operands or integers; operators + − * / ^."
-                    ], diagram: "Infix: (3+4)*5\nPostfix: 3 4 + 5 *\nPrefix: * + 3 4 5"),
-                    SlideCard(title: "Bit-String Flicking", bullets: [
-                        "Treat strings of 0/1 as bits. Operators: NOT, AND, OR, XOR, LSHIFT, RSHIFT, LCIRC, RCIRC.",
-                        "NOT flips bits. AND/OR/XOR are bitwise on equal-length strings.",
-                        "LSHIFT / RSHIFT drop bits and fill 0. LCIRC / RCIRC rotate.",
-                        "Apply inner operators first; ACSL defines precedence in the topic description."
-                    ], diagram: "1011 AND 1101 = 1001\nNOT 1010 = 0101\nLSHIFT 1011 = 0110"),
-                    SlideCard(title: "Loop Tracing", bullets: [
-                        "for and while: write a table of i, accumulators, and printed values.",
-                        "Python range(a,b) is [a, a+1, …, b-1] — exclusive end.",
-                        "Nested loops: inner loop completes fully for each outer iteration.",
-                        "Watch off-by-one and whether the update happens before or after the print."
-                    ], diagram: "s = 0\nfor i in range(1,4):\n    s += i\n# s = 6")
+                    SlideCard(
+                        title: "Welcome — Contest 2 (official Junior syllabus)",
+                        bullets: [
+                            "Still 6 short-answer questions in 30 minutes: 2 prefix/infix/postfix, 2 bit-string flicking, 2 looping. Then one 72-hour HackerRank program.",
+                            "Junior: no student beyond grade 9. Paper uses ACSL pseudocode for loops (FOR / WHILE), not only Python.",
+                            "Bit-string operators are NOT, AND, OR, XOR, LSHIFT, RSHIFT, LCIRC, RCIRC. NAND/NOR are Contest 4 gates, not this paper.",
+                            "Prefix/postfix have no PEMDAS and no parentheses. Infix does."
+                        ],
+                        diagram: "C2 paper: 2 + 2 + 2 = 6 questions, 30 min\nThen 72-hour program, 5 pts",
+                        coachNote: "Write PREFIX · BITS · LOOPS on the board. Do not open Contest 3 tonight."
+                    ),
+                    SlideCard(
+                        title: "Infix vs prefix vs postfix",
+                        bullets: [
+                            "Infix: operator in the middle. 3 + 4. School math. Parentheses and PEMDAS matter.",
+                            "Prefix (Polish): operator BEFORE its two operands. + 3 4. Then * + 3 4 5 means (3+4)*5.",
+                            "Postfix (Reverse Polish): operator AFTER. 3 4 +. Then 3 4 + 5 * is (3+4)*5.",
+                            "ACSL operators: + − * / and ^ (exponent). Same three letters can appear as operands: A B +."
+                        ],
+                        diagram: "Infix:   (3 + 4) * 5\nPrefix:  * + 3 4 5\nPostfix: 3 4 + 5 *\n\nValue of all three: 35",
+                        coachNote: "Hands: plus BETWEEN, plus BEFORE, plus AFTER. Same 3, 4, 5."
+                    ),
+                    SlideCard(
+                        title: "Evaluate postfix — stack, pop TWO, right operand first",
+                        bullets: [
+                            "Scan left to right. Number → push. Operator → pop b, then pop a, compute a (op) b, push the result.",
+                            "b is the right operand (popped first). a is the left. For minus, a − b not b − a.",
+                            "Worked: 3 4 + 5 *. Push 3, push 4, plus → 7. Push 5, times → 35.",
+                            "Classic: 5 1 2 + 4 * + 3 −  → 14."
+                        ],
+                        diagram: "5 1 2 + 4 * + 3 -\n[5]\n[5,1]\n[5,1,2]\n+  → [5,3]\n[5,3,4]\n*  → [5,12]\n+  → [17]\n[17,3]\n-  → [14]",
+                        coachNote: "If they get −1 on a minus, they swapped a and b."
+                    ),
+                    SlideCard(
+                        title: "Do now · postfix (2 min)",
+                        bullets: [
+                            "Show the stack after every token. Pop b then a.",
+                            "Q1. 2 3 + 4 *",
+                            "Q2. 5 1 2 + 4 * + 3 -",
+                            "Q3. 9 3 - 2 *   (minus is a-b)"
+                        ],
+                        diagram: "Q1 20\nQ2 14\nQ3 12",
+                        coachNote: "Cover the gray box. Hands down. Then reveal."
+                    ),
+                    SlideCard(
+                        title: "Evaluate prefix — scan from the RIGHT, same stack idea",
+                        bullets: [
+                            "Prefix is written operator-first, so evaluate from the right end.",
+                            "* + 2 3 4 : from the right, 4 then 3 then 2 then + then *. + takes 2 and 3 → 5. * takes 5 and 4 → 20.",
+                            "Or rewrite as a tree: * applies to (+ 2 3) and 4."
+                        ],
+                        diagram: "* + 2 3 4\n= * (2+3) 4\n= * 5 4\n= 20",
+                        coachNote: "If prefix melts them, convert to infix with parentheses first, then compute."
+                    ),
+                    SlideCard(
+                        title: "Convert infix → postfix (the contest shape)",
+                        bullets: [
+                            "Wiki method: fully parenthesize the infix. Each ‘term’ is (operand op operand).",
+                            "Write the operands in the same left-to-right order. After each term is finished, write its operator AFTER those operands.",
+                            "(3 + 4) * 5  →  3 4 + 5 *",
+                            "3 + 4 * 5 with PEMDAS is 3 + (4 * 5) → 3 4 5 * +  not  3 4 + 5 *.",
+                            "Check: convert your postfix back to infix. If it is not the original, you dropped parentheses."
+                        ],
+                        diagram: "Infix PEMDAS:  3 + 4 * 5  =  3+(4*5)\nPostfix:       3 4 5 * +\n\nInfix grouped: (3+4)*5\nPostfix:       3 4 + 5 *",
+                        coachNote: "The #1 trap is ignoring PEMDAS and always doing left-to-right."
+                    ),
+                    SlideCard(
+                        title: "Convert infix → prefix",
+                        bullets: [
+                            "Same parenthesize step. Write operators BEFORE their two operands.",
+                            "(3+4)*5 → * + 3 4 5",
+                            "3+4*5 → + 3 * 4 5",
+                            "^ is exponent. Fully parenthesize (A*B)^(C/D) before moving operators."
+                        ],
+                        diagram: "(3 + 4) * 5\nprefix: * + 3 4 5\n\n3 + 4 * 5\nprefix: + 3 * 4 5",
+                        coachNote: "Do one conversion on the board with nested parentheses drawn huge."
+                    ),
+                    SlideCard(
+                        title: "Do now · convert notation (3 min)",
+                        bullets: [
+                            "Parenthesize first. PEMDAS on infix.",
+                            "Q1. (3+4)*5 as postfix AND prefix.",
+                            "Q2. 3+4*5 as postfix. (Not the same as Q1.)",
+                            "Q3. Prefix * + 2 3 4. Value?"
+                        ],
+                        diagram: "Q1  3 4 + 5 *    and    * + 3 4 5\nQ2  3 4 5 * +\nQ3  20",
+                        coachNote: "Cover the gray box. Hands down. Then reveal."
+                    ),
+                    SlideCard(
+                        title: "Bit-string flicking — NOT AND OR XOR (not NAND)",
+                        bullets: [
+                            "A bit-string is only 0s and 1s. Same length after padding.",
+                            "NOT (~) flips each bit. 1010 → 0101. Width stays the same. Leading 0s count.",
+                            "AND: 1 only if both 1. OR: 1 if at least one 1. XOR: 1 if the bits DIFFER.",
+                            "If one string is shorter, pad 0s on the LEFT until they match. 11010 AND 1110 → 11010 AND 01110 = 01010."
+                        ],
+                        diagram: "1011 AND 1101 = 1001\n1011 OR  1101 = 1111\n1011 XOR 1101 = 0110\nNOT 1010     = 0101\n\nPad left: 1110 → 01110 if the other is 5 bits",
+                        coachNote: "NAND/NOR wait for Contest 4 circuits. Do not mix them into bit-string homework."
+                    ),
+                    SlideCard(
+                        title: "LSHIFT / RSHIFT vs LCIRC / RCIRC",
+                        bullets: [
+                            "LSHIFT-x: move left x places. Bits that fall off the left are GONE. Zeros enter on the right. Width unchanged.",
+                            "RSHIFT-x: move right x places. Zeros enter on the left.",
+                            "LCIRC-x: rotate left. Bits that fall off the left come back on the right.",
+                            "RCIRC-x: rotate right. Bits that fall off the right come back on the left.",
+                            "Wiki: LSHIFT-2 of 01101 = 10100. RCIRC-1 of 01101 = 10110. LCIRC-3 of 01101 = 01011."
+                        ],
+                        diagram: "x = 01101\nLSHIFT-2  10100   (lost two left bits, zeros in)\nRSHIFT-3  00001\nLCIRC-3   01011   (01101 → 01011)\nRCIRC-1   10110",
+                        coachNote: "Fingers on paper: SHIFT loses, CIRC keeps. Chant it."
+                    ),
+                    SlideCard(
+                        title: "Bit-string order of operations (memorize)",
+                        bullets: [
+                            "Highest to lowest: NOT, then SHIFT and CIRC, then AND, then XOR, then OR.",
+                            "Equal-level binary ops go left to right. Unary NOT binds right to left.",
+                            "Parentheses still win. Work inside-out on nested CIRC.",
+                            "Wiki: (RSHIFT-1 (LCIRC-4 (RCIRC-2 01101))) → RCIRC-2 = 01011, LCIRC-4 = 10101, RSHIFT-1 = 01010."
+                        ],
+                        diagram: "Precedence (high → low):\n  NOT\n  LSHIFT RSHIFT LCIRC RCIRC\n  AND\n  XOR\n  OR\n\n(RSHIFT-1 (LCIRC-4 (RCIRC-2 01101))) = 01010",
+                        coachNote: "Wrong order AND vs OR is a free missed point. Poster this list."
+                    ),
+                    SlideCard(
+                        title: "Do now · bits (3 min)",
+                        bullets: [
+                            "Pad shorter on the LEFT. CIRC keeps bits; SHIFT loses them.",
+                            "Q1. 1011 AND 1101",
+                            "Q2. RCIRC-1 of 01101",
+                            "Q3. (RSHIFT-1 (LCIRC-4 (RCIRC-2 01101)))"
+                        ],
+                        diagram: "Q1 1001\nQ2 10110\nQ3 01010",
+                        coachNote: "Cover the gray box. Hands down. Then reveal."
+                    ),
+                    SlideCard(
+                        title: "ACSL looping — FOR start TO end STEP",
+                        bullets: [
+                            "Junior Contest 2 paper uses ACSL FOR, not Python range, unless the stem is Python.",
+                            "FOR i = start TO end STEP inc ... NEXT i. i runs start, start+inc, … while it has not passed end.",
+                            "If STEP is missing, STEP is +1. STEP −1 counts down. NEXT i is the bottom of the loop.",
+                            "FOR i = 1 TO 4 : s = s + i  NEXT i  with s=0 → 10. That is 1,2,3,4 — end is INCLUDED.",
+                            "Python range(1,4) is 1,2,3 only. That trap is for the programming problem, not the ACSL FOR paper."
+                        ],
+                        diagram: "s = 0\nFOR i = 1 TO 4 STEP 1\n    s = s + i\nNEXT i\nOUTPUT s\n\n→ 10   (1+2+3+4)\n\nPython: range(1,4) would be 6. Different."
+                    ),
+                    SlideCard(
+                        title: "ACSL WHILE — test at the top, table every pass",
+                        bullets: [
+                            "WHILE condition ... END WHILE. If the test is false at the top, the body never runs.",
+                            "If the body never changes the test, it is an infinite loop — ACSL will not do that on Junior.",
+                            "Columns: pass number, variables, whether the WHILE test is true.",
+                            "Nested: inner WHILE/FOR finishes completely for each outer pass."
+                        ],
+                        diagram: "n = 1 : s = 0\nWHILE n < 5\n    s = s + n\n    n = n + 1\nEND WHILE\nOUTPUT s\n\nn: 1,2,3,4 then 5 stops. s=10.",
+                        coachNote: "Cover the body when the test is false. Same physical trick as else."
+                    ),
+                    SlideCard(
+                        title: "Do now · ACSL loops (3 min)",
+                        bullets: [
+                            "FOR end is INCLUDED. Python range is not this paper.",
+                            "Q1. s=0. FOR i=1 TO 4 STEP 1. s=s+i. NEXT i. Output s.",
+                            "Q2. Python: s=0; for i in range(1,4): s+=i. Final s?",
+                            "Q3. n=1,s=0. WHILE n<4: s=s+n; n=n+1. Output s."
+                        ],
+                        diagram: "Q1 10\nQ2 6\nQ3 6",
+                        coachNote: "Cover the gray box. Hands down. Then reveal."
+                    ),
+                    SlideCard(
+                        title: "Python lab — postfix evaluator (HackerRank shape)",
+                        bullets: [
+                            "Programming is still 72 hours, exact print. Contest 2 often looks like evaluate an expression or simulate a loop.",
+                            "split() tokens. Integers vs operators. Pop b then a.",
+                            "Include ^ as ** if the spec uses exponent."
+                        ],
+                        diagram: "tokens = input().split()\nstack = []\nfor tok in tokens:\n    if tok in '+-*':\n        b = stack.pop(); a = stack.pop()\n        # compute a (op) b, then append\n    else:\n        stack.append(int(tok))\nprint(stack[-1])",
+                        coachNote: "Type 3 4 + 5 * and wait for 35 before leaving lab."
+                    ),
+                    SlideCard(
+                        title: "Timed mixed 6 · Contest 2 (12 min)",
+                        bullets: [
+                            "Silent. Two notation, two bits, two loops. Then grade.",
+                            "Q1. Postfix 3 4 + 5 *",
+                            "Q2. Infix (3+4)*5 as postfix",
+                            "Q3. 1011 XOR 1101",
+                            "Q4. LSHIFT-1 of 1011 (4 bits, 0-fill)",
+                            "Q5. FOR i=1 TO 3: s=s+i with s=0. Output s.",
+                            "Q6. WHILE n<3 starting n=1 s=0: s=s+n; n=n+1. Output s."
+                        ],
+                        diagram: "Q1 35\nQ2 3 4 + 5 *\nQ3 0110\nQ4 0110\nQ5 6\nQ6 3",
+                        coachNote: "Then open Team Mock Exams Contest 2 for a second 6."
+                    )
                 ],
                 pythonPrompt: "Read a postfix expression of integers and + - * operators. Evaluate and print the integer result.",
                 pythonTemplate: """
@@ -1537,14 +1973,17 @@ SlideCard(
                     print(solve())
                 """,
                 pythonNotes: [
-                    "split() already tokenizes '3 4 + 5 *' into a list — do not parse character by character.",
-                    "Pop order: second operand is popped first (b), then first operand (a).",
-                    "Hidden tests send one line of tokens. Your function should return int.",
-                    "If the spec says print only the number, do not print debug traces."
+                    "Postfix: pop b then a. a - b not b - a.",
+                    "ACSL FOR includes the end value. Python range does not.",
+                    "Bit-strings: pad the shorter on the LEFT. CIRC keeps bits; SHIFT loses them.",
+                    "72-hour program: print only the number."
                 ],
                 homework: """
                 # Contest 2 homework
-                # Evaluate postfix 5 1 2 + 4 * + 3 - on paper (should be 14), then code it.
+                # Paper: infix (3+4)*5 → postfix and prefix.
+                # Paper: RCIRC-1 of 01101. Precedence poster.
+                # Paper: ACSL FOR i=1 TO 4, s+=i → 10.
+                # Code: postfix 5 1 2 + 4 * + 3 -  → 14
 
                 import sys
 
@@ -1565,27 +2004,138 @@ SlideCard(
         case 3:
             return ContestSyllabus(
                 contest: 3,
-                title: "Contest 3 — Boolean Algebra, Stacks/Queues, Array Tracing",
-                topics: ["Boolean Algebra", "Stacks / Queues", "Array Tracing"],
+                title: "Contest 3 — Boolean Algebra, Data Structures, Arrays",
+                topics: ["Boolean Algebra", "Stacks / Queues", "WDTTPD Arrays"],
                 slides: [
-                    SlideCard(title: "Boolean Algebra", bullets: [
-                        "AND ·  OR +  NOT. XOR is 1 iff inputs differ.",
-                        "Identities: A+0=A, A·1=A, A+A'=1, A·A'=0, DeMorgan: (A+B)'=A'B'.",
-                        "Simplify before expanding. ACSL answers are usually simplified expressions or 0/1.",
-                        "Order: NOT, then AND, then OR — unless parentheses say otherwise."
-                    ], diagram: "(A+B)' = A' · B'\n(A·B)' = A' + B'"),
-                    SlideCard(title: "Stacks & Queues", bullets: [
-                        "Stack: LIFO — push / pop / peek at the top.",
-                        "Queue: FIFO — enqueue at back, dequeue from front.",
-                        "Trace a sequence of operations; the answer is often the remaining contents left-to-right.",
-                        "Python list: append/pop() is a stack; collections.deque is a queue."
-                    ], diagram: "push A, push B, pop, push C\nStack top → C A"),
-                    SlideCard(title: "Array Tracing", bullets: [
-                        "0-based vs 1-based: ACSL Python traces are 0-based unless the stem says otherwise.",
-                        "a[i] = a[i-1] + 1 mutates in place — later reads see new values.",
-                        "Slicing a[1:4] does not include index 4.",
-                        "Write the array after each statement; the printed join is the short-answer."
-                    ], diagram: "a = [2, 4, 6]\na[1] = a[0] + a[2]\n# [2, 8, 6]")
+                    SlideCard(
+                        title: "Welcome — Contest 3 (official Junior syllabus)",
+                        bullets: [
+                            "6 questions, 30 minutes: 2 Boolean algebra, 2 stacks/queues, 2 array tracing (ACSL A(i) style).",
+                            "Then 72-hour programming. Arrays on the PAPER are ACSL arrays, not always Python lists.",
+                            "Junior data structures: stack PUSH/POP and queue enqueue/dequeue. Not trees."
+                        ],
+                        diagram: "C3: Boolean · Stack/Queue · Arrays\n6 Q, 2 each, 30 min + 72-hr program",
+                        coachNote: "Do not teach FSAs or LISP — those are other divisions."
+                    ),
+                    SlideCard(
+                        title: "Boolean algebra — symbols and identities",
+                        bullets: [
+                            "AND is · or just write AB. OR is +. NOT is A' or Ā or NOT A.",
+                            "A+0=A, A·1=A, A+1=1, A·0=0, A+A=A, A·A=A.",
+                            "A+A'=1, A·A'=0.  (A')'=A.",
+                            "XOR is 1 iff the two bits differ. XNOR is 1 iff they match.",
+                            "Order unless parentheses: NOT, then AND, then OR."
+                        ],
+                        diagram: "A + 0 = A     A · 1 = A\nA + A' = 1    A · A' = 0\nA + 1 = 1     A · 0 = 0",
+                        coachNote: "Quiz identities with the hex-strip energy. Speed matters."
+                    ),
+                    SlideCard(
+                        title: "DeMorgan — both directions, then stop expanding",
+                        bullets: [
+                            "(A+B)' = A' · B'.  (A·B)' = A' + B'.",
+                            "ACSL often wants the simplified form, not a 16-row expansion.",
+                            "Distribute only if simplify-first did not finish. A(B+C)=AB+AC.",
+                            "Worked: (A+B)' + C  is not the same as A'+B'+C without care — DeMorgan applies to the grouped NOT."
+                        ],
+                        diagram: "(A + B)' = A' · B'\n(A · B)' = A' + B'\n\nSimplify (A+0)' · 1 = A'",
+                        coachNote: "Write both DeMorgan laws as a poster. Point at the dual every time."
+                    ),
+                    SlideCard(
+                        title: "Do now · Boolean (2 min)",
+                        bullets: [
+                            "Q1. (A+B)'",
+                            "Q2. (A·B)'",
+                            "Q3. A + A' · 1  (AND before OR)"
+                        ],
+                        diagram: "Q1 A'B'\nQ2 A'+B'\nQ3 1",
+                        coachNote: "Cover the gray box. Hands down. Then reveal."
+                    ),
+                    SlideCard(
+                        title: "Stack — LIFO, ACSL PUSH / POP",
+                        bullets: [
+                            "Stack: last in, first out. PUSH adds on top. POP removes the top.",
+                            "Trace a column ‘top → bottom’. After PUSH A, PUSH B, POP, PUSH C: top is C, then A.",
+                            "POP on empty: Junior stems usually avoid it; programming code should still guard.",
+                            "Answer format: remaining items top-first or left-to-right as the sample shows."
+                        ],
+                        diagram: "PUSH A     [A]\nPUSH B     [A, B]  top=B\nPOP        [A]\nPUSH C     [A, C]  top=C\n\nTop to bottom: C, A",
+                        coachNote: "Use a stack of real paper plates."
+                    ),
+                    SlideCard(
+                        title: "Queue — FIFO, enqueue back, dequeue front",
+                        bullets: [
+                            "Queue: first in, first out. ENQ / enqueue at the BACK. DEQ / dequeue from the FRONT.",
+                            "ENQ X, ENQ Y, DEQ → Y is now at the front.",
+                            "Do not mix stack POP with queue DEQ in the same mental picture — draw two boxes."
+                        ],
+                        diagram: "ENQ X   front → X\nENQ Y   front → X Y\nDEQ     front → Y\n\nFront item: Y",
+                        coachNote: "Cafeteria line. First tray in is first tray out."
+                    ),
+                    SlideCard(
+                        title: "Do now · stack and queue (2 min)",
+                        bullets: [
+                            "Q1. PUSH A, PUSH B, POP, PUSH C. Top to bottom (top first).",
+                            "Q2. ENQ X, ENQ Y, DEQ. Front item?",
+                            "Q3. Start empty. PUSH A, ENQ B, POP, DEQ. Stack leftover? Queue leftover?"
+                        ],
+                        diagram: "Q1 C, A\nQ2 Y\nQ3 both empty",
+                        coachNote: "Cover the gray box. Hands down. Then reveal."
+                    ),
+                    SlideCard(
+                        title: "ACSL arrays — A(1) vs A(0), 2-D is (row, col)",
+                        bullets: [
+                            "Paper arrays look like A(5) = 9. The stem says whether indexing starts at 0 or 1. Wiki: most past problems start at A(1) or A(1,1).",
+                            "1-D: one subscript. 2-D: A(row, col). Not (col, row).",
+                            "Assignment A(2) = A(1) + A(3) mutates in place. Later lines see the new value.",
+                            "Python lists are 0-based and use a[2]. Translate carefully. a[1:4] excludes 4 — that is Python, not ACSL A(1) to A(4)."
+                        ],
+                        diagram: "Start (1-based): A(1)=2, A(2)=4, A(3)=6\nA(2) = A(1) + A(3)\nNow A(2)=8. List: 2, 8, 6\n\n2-D: A(2,3) is row 2, column 3.",
+                        coachNote: "Circle the first index in the stem before tracing."
+                    ),
+                    SlideCard(
+                        title: "Array + WHILE — write a table of j, k, n, A(j)",
+                        bullets: [
+                            "Contest 3 looping is allowed because the topic is arrays — WHILE walking A(k) until A(k)<0 is on-syllabus here.",
+                            "Wiki merge sample is long. Method: one row per inner-loop pass. Ask for one cell, like C(4), not the whole array.",
+                            "Never update an index in your head. If j and k both move, both columns."
+                        ],
+                        diagram: "A(0)=12 A(1)=41 A(2)=52 A(3)=57 A(4)=77 A(5)=-100\nWiki merge with B: C(4) ends as 52.\nYou do not need to memorize 52 — you need the table habit.",
+                        coachNote: "If they refuse to make a table, stop and make them. The point is the table."
+                    ),
+                    SlideCard(
+                        title: "Do now · ACSL arrays (3 min)",
+                        bullets: [
+                            "Assume 1-based unless the stem says 0.",
+                            "Q1. A(1)=2, A(2)=4, A(3)=6. A(2)=A(1)+A(3). A(2)?",
+                            "Q2. Same start. Then A(3)=A(2)+1. A(3)? Uses the NEW A(2).",
+                            "Q3. A(1,2) means which cell?"
+                        ],
+                        diagram: "Q1 8\nQ2 9\nQ3 row 1, column 2",
+                        coachNote: "Cover the gray box. Hands down. Then reveal."
+                    ),
+                    SlideCard(
+                        title: "Python lab — stack and queue commands",
+                        bullets: [
+                            "list.append / list.pop() is a stack. collections.deque append / popleft is a queue.",
+                            "Print remaining items as the spec says: spaces, no brackets.",
+                            "72-hour window. Guard extra POP."
+                        ],
+                        diagram: "PUSH A\nPUSH B\nPOP\nENQ C\nDEQ\n\n# implement, print leftover exactly",
+                        coachNote: "One mixed script, then one array-mutate script. Two files."
+                    ),
+                    SlideCard(
+                        title: "Timed mixed 6 · Contest 3 (12 min)",
+                        bullets: [
+                            "Q1. (A+B)'",
+                            "Q2. A=1, B=0. XOR?",
+                            "Q3. PUSH A, PUSH B, POP, PUSH C. Top first.",
+                            "Q4. ENQ X, ENQ Y, DEQ. Front?",
+                            "Q5. A(1)=2,A(2)=4,A(3)=6; A(2)=A(1)+A(3). A(2)?",
+                            "Q6. A(2,1) is row ____ column ____."
+                        ],
+                        diagram: "Q1 A'B'\nQ2 1\nQ3 C,A\nQ4 Y\nQ5 8\nQ6 row 2, column 1",
+                        coachNote: "Second set: Team Mock Exams Contest 3."
+                    )
                 ],
                 pythonPrompt: "Process a sequence of stack/queue commands from stdin and print the remaining items.",
                 pythonTemplate: """
@@ -1618,15 +2168,15 @@ SlideCard(
                     print(solve())
                 """,
                 pythonNotes: [
-                    "splitlines() keeps command order; strip() each line before split().",
-                    "Return type is str here (space-separated). Do not return a list object.",
-                    "Guard empty pop/dequeue — hidden tests may include extra POPs.",
-                    "Match the spec print format exactly: spaces, no brackets."
+                    "Return a string, not a list object.",
+                    "ACSL A(1) is not Python a[1] unless the stem starts at 0.",
+                    "DeMorgan both laws before expanding."
                 ],
                 homework: """
                 # Contest 3 homework
-                # Trace PUSH A / PUSH B / POP / ENQ C / ENQ D / DEQ
-                # Then implement with list + deque.
+                # Paper: (A+B)' and (AB)'. Stack PUSH A B POP PUSH C.
+                # Paper: 1-based A(1)=2 A(2)=4 A(3)=6; A(2)=A(1)+A(3).
+                # Code: simulate PUSH/POP/ENQ/DEQ.
 
                 from collections import deque
                 import sys
@@ -1648,27 +2198,151 @@ SlideCard(
         default:
             return ContestSyllabus(
                 contest: 4,
-                title: "Contest 4 — Graph Matrices, Digital Electronics, Bit Shifts",
-                topics: ["Graph Matrices", "Digital Electronics", "Bit Shifts"],
+                title: "Contest 4 — Graph Theory, Digital Electronics, Strings",
+                topics: ["Graph Theory", "Digital Electronics", "WDTTPD Strings"],
                 slides: [
-                    SlideCard(title: "Graph Matrices", bullets: [
-                        "Adjacency matrix A[i][j] = 1 if an edge i→j exists (0 otherwise).",
-                        "Undirected graphs are symmetric. Directed graphs need not be.",
-                        "A² counts walks of length 2. Number of paths i→j of length k is (A^k)[i][j].",
-                        "Degree of vertex i in an undirected graph = sum of row i."
-                    ], diagram: "Vertices A B C\nA: 0 1 1\nB: 1 0 0\nC: 1 0 0"),
-                    SlideCard(title: "Digital Electronics", bullets: [
-                        "Gates: AND, OR, NOT, NAND, NOR, XOR, XNOR. Draw the circuit, then truth table.",
-                        "NAND and NOR are universal — any circuit can be rebuilt from them.",
-                        "Output of XOR is 1 iff inputs differ. XNOR is 1 iff they match.",
-                        "ACSL may give a circuit in words: F = (A AND B) XOR C."
-                    ], diagram: "A──AND──┐\nB──AND──XOR──F\nC────────┘"),
-                    SlideCard(title: "Bit Shifts", bullets: [
-                        "Left shift n << k multiplies by 2^k (in unbounded Python ints).",
-                        "Right shift n >> k divides by 2^k (floor toward −∞ in Python).",
-                        "ACSL bit-string shifts may be fixed width with 0-fill.",
-                        "Combine with AND masks to extract fields (n & 0b111)."
-                    ], diagram: "00010110 << 1 = 00101100\n00010110 >> 2 = 00000101")
+                    SlideCard(
+                        title: "Welcome — Contest 4 (official Junior syllabus)",
+                        bullets: [
+                            "6 questions, 30 minutes: 2 graph theory, 2 digital electronics (gates), 2 string tracing.",
+                            "Bit shifts/CIRC are Contest 2 bit-string flicking. They are NOT a Contest 4 short-answer topic.",
+                            "Strings: ACSL pseudocode, 0-based index, len, slices, concatenate with +.",
+                            "Still one 72-hour HackerRank program after the paper."
+                        ],
+                        diagram: "C4: Graphs · Circuits · Strings\nNOT bit-shifts on this paper",
+                        coachNote: "If last year’s notes say ‘bit shifts for C4’, throw that page away."
+                    ),
+                    SlideCard(
+                        title: "Graphs — vertices, edges, directed vs undirected",
+                        bullets: [
+                            "A graph is a set of vertices (points) and edges (connections). The drawing can move; the edge list is the graph.",
+                            "Undirected: AB is the same as BA. Directed: arrow AB is not BA unless both arrows exist.",
+                            "Path: a walk on edges. Simple path: no repeated vertex. Cycle: simple except start=end (HEGH).",
+                            "Connected: you can reach every vertex from every other (undirected sense). Otherwise: connected components."
+                        ],
+                        diagram: "V = {A,B,C}   E = {AB, BC}\nPath A-B-C. No cycle.\nAdd CA → cycle ABCA.\n\nDirected AB only: A can reach B, B cannot reach A.",
+                        coachNote: "Build the graph with sticky notes before any matrix."
+                    ),
+                    SlideCard(
+                        title: "Trees, forests, counting cycles",
+                        bullets: [
+                            "Tree: connected, no cycles. A tree with N vertices has exactly N−1 edges.",
+                            "Forest: several trees (disconnected, still no cycles).",
+                            "Wiki sample: vertices A–E, edges AB,BA,BC,CD,DC,DB,DE. Cycles ABA, BCDB, CDC. Answer 3.",
+                            "List cycles by the vertex sequence. Same loop written rotated is the same cycle — do not double-count."
+                        ],
+                        diagram: "Tree: 4 vertices, 3 edges. No loop.\n\nWiki cycles: ABA, BCDB, CDC → 3",
+                        coachNote: "Count cycles by walking; then check you did not list the same loop twice."
+                    ),
+                    SlideCard(
+                        title: "Adjacency matrix and walks of length p",
+                        bullets: [
+                            "N vertices → N×N grid. Cell (i,j) is 1 if there is an edge i→j (directed). 0 otherwise.",
+                            "Undirected: the matrix is symmetric. Degree of i = sum of row i (undirected, no loops).",
+                            "M²[i,j] = number of walks of length 2 from i to j. M^p counts walks of length p.",
+                            "Contest asks ‘how many paths of length 2 or 4 from A to C?’ Add the two cells from M² and M⁴ if they want both lengths."
+                        ],
+                        diagram: "A—B—C undirected\n   A B C\nA  0 1 0\nB  1 0 1\nC  0 1 0\n\n(A²)[A,C] = 1  (walk A-B-C)",
+                        coachNote: "Compute A² by hand for 3×3 before any Python."
+                    ),
+                    SlideCard(
+                        title: "Do now · graphs (3 min)",
+                        bullets: [
+                            "Q1. Undirected A-B-C. Walks of length 2 from A to C?",
+                            "Q2. Same graph: adjacency A[A,C] (direct edge)?",
+                            "Q3. A tree with 5 vertices has how many edges?"
+                        ],
+                        diagram: "Q1 1\nQ2 0\nQ3 4",
+                        coachNote: "Cover the gray box. Hands down. Then reveal."
+                    ),
+                    SlideCard(
+                        title: "Digital electronics — the eight Junior gates",
+                        bullets: [
+                            "BUFFER: output = input. NOT: flip. AND: both 1. OR: at least one 1.",
+                            "NAND: AND then NOT. NOR: OR then NOT. XOR: differ. XNOR: same (match).",
+                            "NAND/NOR belong here, not on the Contest 2 bit-string paper.",
+                            "Translate the drawing to a Boolean expression, then a truth table, then count rows that are TRUE or FALSE as asked."
+                        ],
+                        diagram: "AND  1 only if both 1\nOR   1 if at least one 1\nXOR  1 iff they differ\nNAND 0 only if both 1\nNOR  1 only if both 0\nXNOR 1 iff they match",
+                        coachNote: "Flash each gate with two fingers until NAND vs NOR is automatic."
+                    ),
+                    SlideCard(
+                        title: "Contest shape: which inputs make the circuit FALSE / how many tuples",
+                        bullets: [
+                            "Wiki: circuit FALSE only when both inputs to a final OR are false — chase backwards.",
+                            "Example: F = (A AND B)' + C is FALSE only for (A,B,C)=(1,1,0).",
+                            "‘How many ordered 4-tuples make F TRUE?’ → 16-row truth table, count 1s in the output column.",
+                            "Simplify with DeMorgan when the circuit is messy: (AB)'+C FALSE ⇔ AB C'  TRUE."
+                        ],
+                        diagram: "F = NOT(A AND B) OR C\nF is FALSE only if NOT(AB)=0 and C=0\nNOT(AB)=0 means AB=1, so A=1, B=1, C=0\nOne ordered triple: (1,1,0)",
+                        coachNote: "Small circuits: chase. Four inputs: truth table. Do not guess."
+                    ),
+                    SlideCard(
+                        title: "Do now · gates (3 min)",
+                        bullets: [
+                            "Q1. NAND of 1 and 1.",
+                            "Q2. F = NOT(A AND B) OR C. Ordered triple that makes F FALSE?",
+                            "Q3. XOR of 1 and 0."
+                        ],
+                        diagram: "Q1 0\nQ2 1,1,0\nQ3 1",
+                        coachNote: "Cover the gray box. Hands down. Then reveal."
+                    ),
+                    SlideCard(
+                        title: "ACSL strings — index 0, len, concatenate +",
+                        bullets: [
+                            "Strings sit in double quotes. len(S) is the number of characters. Empty string has length 0.",
+                            "First character is S[0]. Last is S[len(S)-1]. S[len(S)] is an error.",
+                            "Concatenate: t = t + a[j] glues characters. Used to reverse: loop j from len-1 down to 0.",
+                            "Wiki BANANAS: reverse into t, then count positions where a[j]==t[j]. Answer 5 (the middle palindrome run)."
+                        ],
+                        diagram: "a = \"BANANAS\"   len=7\nreverse t = \"SANANAB\"\nmatch at j=1,2,3,4,5  → 5\n(not 7, not 6)",
+                        coachNote: "Write index numbers under every letter before looping."
+                    ),
+                    SlideCard(
+                        title: "ACSL slices vs Python slices (read the sample)",
+                        bullets: [
+                            "Wiki: S = \"ACSL WDTPD\" length 10. S[:3] = first 3 characters = ACS (like Python).",
+                            "Wiki: S[2:6] = characters from index 2 THROUGH 6 INCLUSIVE = \"SL WD\". Python S[2:6] would STOP BEFORE 6.",
+                            "On contest day: copy the problem’s own slice examples. If none, ACSL wiki inclusive-end is the paper habit; Python exclusive-end is the HackerRank habit.",
+                            "S[0] is one character. Errors: negative index or index ≥ len."
+                        ],
+                        diagram: "S = ACSL WDTPD\n idx 0123456789\nS[:3]    ACS          (first 3)\nS[2:6]   SL WD        (2..6 inclusive on paper)\nPython S[2:6] would be SL W  (2,3,4,5 only)",
+                        coachNote: "Box ‘inclusive end on paper / exclusive end in Python’ on the contest card."
+                    ),
+                    SlideCard(
+                        title: "Do now · strings (3 min)",
+                        bullets: [
+                            "S = ACSL WDTPD (space in the middle). Index from 0.",
+                            "Q1. ACSL paper S[2:6] inclusive.",
+                            "Q2. Python S[2:6] exclusive — different?",
+                            "Q3. BANANAS vs its reverse. Matching positions?"
+                        ],
+                        diagram: "Q1 SL WD\nQ2 SL W\nQ3 5",
+                        coachNote: "Cover the gray box. Hands down. Then reveal."
+                    ),
+                    SlideCard(
+                        title: "Python lab — walks of length 2, plus a string reverse count",
+                        bullets: [
+                            "Programming may be graphs or strings. Read the spec. Flattened token scan for matrices.",
+                            "String problems: s[::-1] reverses in Python; still trace on paper the way ACSL does.",
+                            "Print one integer or one string as specified. No labels."
+                        ],
+                        diagram: "n then n*n matrix then u v → walks length 2\n\n# or: read a string, print match-count with reverse",
+                        coachNote: "One matrix program and one string program this meeting."
+                    ),
+                    SlideCard(
+                        title: "Timed mixed 6 · Contest 4 (12 min)",
+                        bullets: [
+                            "Q1. Walks of length 2, A to C, on undirected A-B-C.",
+                            "Q2. Cycles in AB,BA,BC,CD,DC,DB,DE (directed).",
+                            "Q3. NAND 1,1",
+                            "Q4. F=NOT(AB) OR C FALSE at?",
+                            "Q5. ACSL S[2:6] on ACSL WDTPD",
+                            "Q6. BANANAS reverse-match count"
+                        ],
+                        diagram: "Q1 1\nQ2 3\nQ3 0\nQ4 1,1,0\nQ5 SL WD\nQ6 5",
+                        coachNote: "Then Team Mock Exams Contest 4."
+                    )
                 ],
                 pythonPrompt: "Read n, then an n×n adjacency matrix, then two vertices. Print the number of walks of length 2.",
                 pythonTemplate: """
@@ -1681,8 +2355,14 @@ SlideCard(
                         total += matrix[u][k] * matrix[k][v]
                     return total
 
-                def solve() -> int:
+                def palindrome_match_count(s: str) -> int:
+                    t = s[::-1]
+                    return sum(1 for i in range(len(s)) if s[i] == t[i])
+
+                def solve():
                     tokens = sys.stdin.read().strip().split()
+                    if len(tokens) == 1:
+                        return palindrome_match_count(tokens[0])
                     it = iter(tokens)
                     n = int(next(it))
                     matrix = [[int(next(it)) for _ in range(n)] for _ in range(n)]
@@ -1693,14 +2373,17 @@ SlideCard(
                     print(solve())
                 """,
                 pythonNotes: [
-                    "Flattened token scan (iter(tokens)) is the most reliable HackerRank pattern for grids.",
-                    "Vertices may be 0-based in the sample — read the stem before subtracting 1.",
-                    "Return an int count, not a float, even if you think of matrix multiply.",
-                    "Do not print the whole matrix; hidden tests compare a single integer."
+                    "Paper strings: inclusive end on ACSL [a:b]. Python slices exclude the end.",
+                    "M^p[i,j] = walks of length p. A[i][j] is only length 1.",
+                    "Circuit questions: count tuples or name the one FALSE row.",
+                    "Vertices 0-based vs 1-based: read the stem."
                 ],
                 homework: """
                 # Contest 4 homework
-                # Build A^2 by hand for a 3x3 undirected path graph, then code walks of length 2.
+                # Paper: 3 cycles wiki; (A^2)[A,C] on A-B-C path.
+                # Paper: F=(AB)'+C FALSE at (1,1,0). BANANAS match count 5.
+                # Paper: S[2:6] inclusive on ACSL WDTPD.
+                # Code: walks of length 2.
 
                 import sys
 
@@ -2041,7 +2724,7 @@ private struct Contest2Sandbox: View {
     private var bitRows: some View {
         let a = parseBits(bitsA)
         let b = parseBits(bitsB)
-        let width = max(bitsA.count, 1)
+        let width = max(max(bitsA.count, bitsB.count), 1)
         return VStack(alignment: .leading, spacing: 4) {
             Text("AND  \(formatBits(a & b, width: width))")
             Text("OR   \(formatBits(a | b, width: width))")
@@ -2049,7 +2732,23 @@ private struct Contest2Sandbox: View {
             Text("NOT A \(formatBits(~a & mask(width), width: width))")
             Text("LSHIFT A \(formatBits((a << 1) & mask(width), width: width))")
             Text("RSHIFT A \(formatBits(a >> 1, width: width))")
+            Text("LCIRC  A \(formatBits(circLeft(a, width), width: width))")
+            Text("RCIRC  A \(formatBits(circRight(a, width), width: width))")
         }
+    }
+
+    private func circLeft(_ n: Int, _ w: Int) -> Int {
+        let w = max(w, 1)
+        let m = mask(w)
+        let v = n & m
+        return ((v << 1) | (v >> (w - 1))) & m
+    }
+
+    private func circRight(_ n: Int, _ w: Int) -> Int {
+        let w = max(w, 1)
+        let m = mask(w)
+        let v = n & m
+        return ((v >> 1) | ((v & 1) << (w - 1))) & m
     }
 
     private func parseBits(_ s: String) -> Int {
@@ -2118,6 +2817,7 @@ private struct Contest3Sandbox: View {
                 GridRow { Text("XOR"); Text("\(av ^ bv)") }
                 GridRow { Text("NAND"); Text("\((av & bv) == 0 ? 1 : 0)") }
                 GridRow { Text("NOR"); Text("\((av | bv) == 0 ? 1 : 0)") }
+                GridRow { Text("XNOR"); Text("\(av == bv ? 1 : 0)") }
                 GridRow { Text("NOT A"); Text("\(1 - av)") }
             }
             .font(.system(size: 16 * scale, design: .monospaced))
@@ -2160,8 +2860,7 @@ private struct Contest4Sandbox: View {
         [1, 0, 0, 1],
         [0, 1, 1, 0]
     ]
-    @State private var bitValue = 22
-    @State private var shift = 1
+    @State private var sample = "ACSL WDTPD"
     @Environment(\.teachingScale) private var scale
 
     var body: some View {
@@ -2193,13 +2892,12 @@ private struct Contest4Sandbox: View {
             DigitalCircuitDemo()
 
             Divider()
-            Text("Bit shifts (8-bit window)")
+            Text("ACSL strings (paper slice is inclusive)")
                 .font(.headline)
-            Stepper("value = \(bitValue)  (\(eight(bitValue)))", value: $bitValue, in: 0...255)
-            Stepper("shift k = \(shift)", value: $shift, in: 0...7)
-            Text("<<  \(eight((bitValue << shift) & 255))")
-            Text(">>  \(eight(bitValue >> shift))")
-                .font(.system(size: 16 * scale, design: .monospaced))
+            TextField("S", text: $sample)
+            Text(stringTrace(sample))
+                .font(.system(size: 13 * scale, design: .monospaced))
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 
@@ -2207,9 +2905,28 @@ private struct Contest4Sandbox: View {
         (0..<4).reduce(0) { $0 + matrix[u][$1] * matrix[$1][v] }
     }
 
-    private func eight(_ n: Int) -> String {
-        let bin = String(n & 255, radix: 2)
-        return String(repeating: "0", count: max(0, 8 - bin.count)) + bin
+    private func stringTrace(_ s: String) -> String {
+        let chars = Array(s)
+        let n = chars.count
+        func acslSlice(_ a: Int, _ b: Int) -> String {
+            guard n > 0 else { return "" }
+            let lo = max(0, a)
+            let hi = min(n - 1, b)
+            if lo > hi { return "" }
+            return String(chars[lo...hi])
+        }
+        let py26 = n >= 2 ? String(chars[2..<min(6, n)]) : ""
+        let rev = String(chars.reversed())
+        var matches = 0
+        for i in 0..<n where i < rev.count {
+            if chars[i] == Array(rev)[i] { matches += 1 }
+        }
+        return """
+        len=\(n)
+        ACSL S[2:6] inclusive: \(acslSlice(2, 6))
+        Python S[2:6] exclusive: \(py26)
+        reverse match count: \(matches)
+        """
     }
 }
 
@@ -2411,39 +3128,47 @@ private struct TeamMockExamsView: View {
         ]),
         MockExam(contest: 2, title: "Contest 2", questions: [
             MockQuestion(prompt: "Evaluate postfix: 3 4 + 5 *", answer: "35",
-                         derivation: "Stack: [3] [3,4] pop 4,3 → 7; push 7; push 5; 7*5=35."),
-            MockQuestion(prompt: "Prefix * + 2 3 4 equals?", answer: "20",
-                         derivation: "* applied to (+ 2 3) and 4 → (5)*4=20."),
-            MockQuestion(prompt: "1011 AND 1101 (binary, 4 bits)", answer: "1001",
-                         derivation: "Bitwise AND: 1∧1=1, 0∧1=0, 1∧0=0, 1∧1=1 → 1001."),
-            MockQuestion(prompt: "LSHIFT of 1011 (4-bit, 0-fill)", answer: "0110",
-                         derivation: "Shift left, drop leftmost 1, fill 0 on right → 0110."),
-            MockQuestion(prompt: "s=0; for i in range(1,5): s+=i. Final s?", answer: "10",
-                         derivation: "range(1,5) is 1,2,3,4. Sum=10. Exclusive end is the usual Python trap.")
+                         derivation: "Push 3,4; plus then 7; push 5; times then 35."),
+            MockQuestion(prompt: "Infix (3+4)*5 as postfix?", answer: "3 4 + 5 *",
+                         derivation: "Parenthesize (3+4)*5. Operands 3 4 5. Plus first, then times."),
+            MockQuestion(prompt: "1011 AND 1101 (4 bits)", answer: "1001",
+                         derivation: "AND bit by bit: 1001. Pad shorter strings on the LEFT."),
+            MockQuestion(prompt: "RCIRC-1 of 01101?", answer: "10110",
+                         derivation: "Rotate right: the rightmost 1 comes to the front. SHIFT would fill 0."),
+            MockQuestion(prompt: "(RSHIFT-1 (LCIRC-4 (RCIRC-2 01101)))", answer: "01010",
+                         derivation: "RCIRC-2 -> 01011; LCIRC-4 -> 10101; RSHIFT-1 -> 01010."),
+            MockQuestion(prompt: "ACSL: s=0; FOR i=1 TO 4 STEP 1; s=s+i; NEXT i. Output s?", answer: "10",
+                         derivation: "i=1,2,3,4 (end INCLUDED). Sum 10. Python range(1,4) would be 6.")
         ]),
+
         MockExam(contest: 3, title: "Contest 3", questions: [
             MockQuestion(prompt: "Simplify (A+B)' using DeMorgan.", answer: "A'B'",
-                         derivation: "(A+B)' = A' · B'. Coach: write the dual (AB)' = A'+B' beside it."),
-            MockQuestion(prompt: "A=1, B=0. A XOR B?", answer: "1",
-                         derivation: "XOR is 1 iff inputs differ. Truth table row (1,0) → 1."),
+                         derivation: "(A+B)' = A' · B'. Dual: (AB)' = A'+B'."),
+            MockQuestion(prompt: "Simplify A + A' · 1  (AND before OR).", answer: "1",
+                         derivation: "A'·1=A', then A+A'=1."),
             MockQuestion(prompt: "Stack: PUSH A, PUSH B, POP, PUSH C. Top to bottom (top first)?", answer: "C,A",
-                         derivation: "After pop, stack is [A]; push C → [A,C], top=C."),
+                         derivation: "After pop [A]; push C so top is C then A."),
             MockQuestion(prompt: "Queue ENQ X, ENQ Y, DEQ. Front item?", answer: "Y",
-                         derivation: "FIFO: X then Y; dequeue removes X; front is Y."),
-            MockQuestion(prompt: "a=[2,4,6]; a[1]=a[0]+a[2]; a is?", answer: "[2,8,6]",
-                         derivation: "Index 1 becomes 2+6=8. In-place mutation; later reads see 8.")
+                         derivation: "FIFO: dequeue X; front is Y."),
+            MockQuestion(prompt: "1-based: A(1)=2, A(2)=4, A(3)=6. A(2)=A(1)+A(3). A(2)?", answer: "8",
+                         derivation: "2+6=8 in place. Stem started at A(1), not Python a[0]."),
+            MockQuestion(prompt: "A(1,2) in ACSL 2-D arrays means?", answer: "row 1, column 2",
+                         derivation: "Order is (row, col). Not (col, row).")
         ]),
+
         MockExam(contest: 4, title: "Contest 4", questions: [
-            MockQuestion(prompt: "Undirected edge 0-1 and 1-2. A[0][2] in adjacency matrix?", answer: "0",
-                         derivation: "No direct 0-2 edge. Walks of length 2 exist via 1, counted in A² not A."),
-            MockQuestion(prompt: "For A with A01=A10=A12=A21=1 else 0, (A²)[0][2]?", answer: "1",
-                         derivation: "Sum_k A[0][k]A[k][2] = A[0][1]A[1][2]=1. One walk of length 2."),
-            MockQuestion(prompt: "A=1,B=1,C=0. F=(A AND B) XOR C", answer: "1",
-                         derivation: "AND=1; 1 XOR 0=1. Draw the two-gate circuit on the projector."),
-            MockQuestion(prompt: "8-bit 00010110 left-shifted 1?", answer: "00101100",
-                         derivation: "Drop/shift left, 0-fill. 22<<1 = 44 = 001011002."),
-            MockQuestion(prompt: "n=22; n>>2 in Python?", answer: "5",
-                         derivation: "22//4 = 5. Right shift by k is floor-divide by 2^k for non-negative n.")
+            MockQuestion(prompt: "Undirected A-B-C. How many walks of length 2 from A to C?", answer: "1",
+                         derivation: "Only A-B-C. Direct A-C is 0; (A^2)[A,C]=1."),
+            MockQuestion(prompt: "Directed edges AB,BA,BC,CD,DC,DB,DE. How many different cycles?", answer: "3",
+                         derivation: "Wiki: ABA, BCDB, CDC. Do not count rotations twice."),
+            MockQuestion(prompt: "F = NOT(A AND B) OR C. Ordered triple that makes F FALSE?", answer: "1,1,0",
+                         derivation: "OR is 0 only if both sides 0: C=0 and NOT(AB)=0 so AB=1."),
+            MockQuestion(prompt: "NAND of 1 and 1?", answer: "0",
+                         derivation: "AND is 1, NOT makes 0. NAND is 0 only on 1,1."),
+            MockQuestion(prompt: "S=ACSL WDTPD. ACSL paper S[2:6] (inclusive end)?", answer: "SL WD",
+                         derivation: "Indices 2 through 6: S L space W D. Python S[2:6] omits D."),
+            MockQuestion(prompt: "a=BANANAS reversed to t. How many j with a[j]==t[j]?", answer: "5",
+                         derivation: "SANANAB vs BANANAS match at j=1 through 5.")
         ])
     ]
 }
