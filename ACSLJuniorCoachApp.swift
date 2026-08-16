@@ -1236,15 +1236,116 @@ SlideCard(
                         diagram: "line = input().strip()\nparts = line.split()\nnumeral = parts[0]\nbase = int(parts[1])\nprint(int(numeral, base))\n\n# type 2F 16  →  47\n# type 77 8   →  63\n# type 1011 2 →  11",
                         coachNote: "Do not open import sys until 47 appears. One victory, then the fancy file."
                     ),
+                    SlideCard(
+                        title: "Python: smallest function — type hello() together",
+                        bullets: [
+                            "Pause conversion. Four new words: def, colon, indent, call.",
+                            "Type this exactly. hello() at the bottom is the CALL — that is what makes hi appear.",
+                            "If you only type def and press Run, the screen stays blank. The recipe sits on a shelf until you call it.",
+                            "Empty () means the recipe needs no ingredients. Indent print with 4 spaces so it belongs to hello."
+                        ],
+                        diagram: "def hello():\n    print('hi')\n\nhello()     # hi\nhello()     # hi again\n\n# Skip the hello() lines → nothing prints.",
+                        coachNote: "Run with no call (blank). Then add hello(). That is the whole lesson."
+                    ),
+                    SlideCard(
+                        title: "Python: one number in the parentheses",
+                        bullets: [
+                            "The recipe needs one number. We name the box n. show(5) puts 5 in n.",
+                            "Type this. You should see 10, then 6.",
+                            "n exists only inside the recipe. After it finishes, n is gone. That is OK.",
+                            "This version only prints. Next we hand a value back with return."
+                        ],
+                        diagram: "def show(n):\n    print(n * 2)\n\nshow(5)    # 10\nshow(3)    # 6\n\n# show() empty → error. It wanted a number.",
+                        coachNote: "Call show(5) and show(3). Then try empty show() and read the error."
+                    ),
+                    SlideCard(
+                        title: "Python: two numbers — add(a, b)",
+                        bullets: [
+                            "Two boxes, comma between. add(3, 4) puts 3 in a and 4 in b.",
+                            "Type it. You want 7, then 10.",
+                            "Order is the order in the parentheses: first listed, first box."
+                        ],
+                        diagram: "def add(a, b):\n    print(a + b)\n\nadd(3, 4)     # 7\nadd(6, 4)     # 10",
+                        coachNote: "Ask Soha for add(2, 8) before you type it."
+                    ),
+                    SlideCard(
+                        title: "Python: a function is a named recipe you can reuse",
+                        bullets: [
+                            "So far every line runs from top to bottom, once. A function is a recipe with a NAME. You write it once. You use it later by saying the name.",
+                            "Real life: ‘double this’ is a recipe. You can double 5, then later double 10, without rewriting the steps.",
+                            "Python’s word for the recipe title is def (short for define). The body is indented, same idea as later if-blocks.",
+                            "Nothing in the recipe runs until you CALL it: write the name with parentheses. def only files the recipe on the shelf.",
+                            "We will do tiny recipes first (double a number). Then we wrap the conversion program in a recipe named solve."
+                        ],
+                        diagram: "Shelf:  recipes we defined\n  double\n  solve     (later)\n\nCalling:  double(5)  means ‘run the double recipe on 5’\nDefining without calling does NOTHING on the screen.",
+                        coachNote: "Physical: write ‘double’ on a card. Put it on a shelf. Nothing happens until you pick it up and say double-five."
+                    ),
+                    SlideCard(
+                        title: "Python: def, colon, indent — writing the recipe",
+                        bullets: [
+                            "def double(n):  means: the recipe is named double. It needs one ingredient, a box named n.",
+                            "The colon : at the end of that line is required. Next lines that belong to the recipe are indented (4 spaces).",
+                            "return n * 2  means: the answer of this recipe is twice n. Hand that value back to whoever called us.",
+                            "print talks to the screen. return talks to the rest of the program. Contest code almost always return the number, then print once outside.",
+                            "Call it: print(double(5)). Python puts 5 in n, computes 10, return 10, print shows 10."
+                        ],
+                        diagram: "def double(n):\n    return n * 2\n\nprint(double(5))    # 10\nprint(double(8))    # 16\nprint(double(0))    # 0\n\n# Forgot to call:\ndef double(n):\n    return n * 2\n# (no print)  → screen stays blank. Recipe is only on the shelf.",
+                        coachNote: "Type double together. Call it three times. Then comment out the print and show the blank screen."
+                    ),
+                    SlideCard(
+                        title: "Python: return vs print inside a function (first look)",
+                        bullets: [
+                            "If the recipe print(n*2) and you write x = double(5), x is empty (None). The 10 went to the screen, not into x.",
+                            "If the recipe return n*2, then x = double(5) puts 10 in x. You can print(x) or use it in math.",
+                            "ACSL: compute with return. Speak to the grader with one print at the end.",
+                            "You may print inside a function while debugging. Take those prints OUT before submit.",
+                            "Week 5 will hit this again with recursion. Learn the slogan now: return the value, print the answer."
+                        ],
+                        diagram: "def shown(n):\n    print(n * 2)     # talks to screen\n\ndef given(n):\n    return n * 2     # hands value back\n\nx = given(5)\nprint(x)             # 10\n\n# x = shown(5)  → x is None, and 10 already printed",
+                        coachNote: "Two columns on the board: SCREEN vs HAND BACK."
+                    ),
+                    SlideCard(
+                        title: "Do now · a tiny function (2 min)",
+                        bullets: [
+                            "Q1. What does print(double(6)) show if def double(n): return n*2?",
+                            "Q2. If you write def double(n): return n*2  and never call it, what appears on the screen?",
+                            "Q3. add(a, b) should hand back a+b. Which is right: return a+b  or  print(a+b)  if we want x = add(3,4) to be 7?"
+                        ],
+                        diagram: "Q1  12\nQ2  nothing  (recipe on the shelf only)\nQ3  return a+b",
+                        coachNote: "If Q2 is 0 or error, they think def runs immediately."
+                    ),
+                    SlideCard(
+                        title: "Python: wrap our conversion in def solve()",
+                        bullets: [
+                            "Same four-line program, now inside a recipe. The ingredient list is empty: solve() needs nothing from the parentheses because input() listens inside.",
+                            "return the number. Outside: print(solve()). One print, one number, grader is happy.",
+                            "Why bother? HackerRank samples sometimes say ‘implement solve’. Also you can test solve() later with fake input. For now it is just a named box around code we already trust.",
+                            "Type this only after the no-def four-liner already printed 47."
+                        ],
+                        diagram: "def solve():\n    line = input().strip()\n    parts = line.split()\n    numeral = parts[0]\n    base = int(parts[1])\n    return int(numeral, base)\n\nprint(solve())\n\n# type 2F 16  →  47",
+                        coachNote: "Copy the four lines into the indent. Missed indent is the usual crash."
+                    ),
+                    SlideCard(
+                        title: "Python: import sys — borrow a toolbox (optional dress-up)",
+                        bullets: [
+                            "import sys means: borrow Python’s sys toolbox. We need it for sys.stdin — ‘everything the robot typed, not just one line.’",
+                            "sys.stdin.read() reads ALL leftover typing at once. .strip().split() then makes one long row of cups, including blank-line problems.",
+                            "One line of input: input() is enough. Many lines or mystery blank lines: stdin.read() is sturdier.",
+                            "You do not need if __name__ == '__main__' to score. That line means ‘only auto-run when this file is the program, not when someone imports it.’ Skip it in middle school unless the template already has it.",
+                            "Next slide is the dressed-up file. Same math as 47. New wrapper only."
+                        ],
+                        diagram: "import sys\nparts = sys.stdin.read().strip().split()\n# cups: whatever the robot typed, split on spaces\n\n# One line still works:\n# input().strip().split()",
+                        coachNote: "If import scares them, stay on print(solve()) with input(). The wrapper is not the skill."
+                    ),
 SlideCard(
                         title: "Python: a complete Contest 1 conversion program (type this)",
                         bullets: [
-                            "This is a full solution shape: read tokens, convert, print one integer, stop.",
-                            "Use sys.stdin.read().split() if there might be extra blank lines. split() with no arguments already splits on all whitespace.",
-                            "print() adds a newline. That is what the grader expects. Do not print extra labels.",
-                            "If the problem says ‘return an int’ inside a function, you return the number and print it only in main."
+                            "Same conversion you already ran. Now it may use def solve and stdin. If import still feels loud, keep last slide’s print(solve()) with input().",
+                            "return the int from solve. print(solve()) once. No extra words.",
+                            "The if __name__ block is optional dress-up. You may delete it and just print(solve()) at the bottom.",
+                            "Check: 2F 16 → 47 still. If that fails, the wrapper is wrong, not the math."
                         ],
-                        diagram: "import sys\n\ndef solve():\n    parts = sys.stdin.read().strip().split()\n    numeral = parts[0]\n    base = int(parts[1])\n    return int(numeral, base)\n\nif __name__ == '__main__':\n    print(solve())\n\n# Sample: stdin  2F 16   → prints 47\n# Sample: stdin  1011 2  → prints 11\n# Sample: stdin  77 8    → prints 63",
+                        diagram: "import sys\n\ndef solve():\n    parts = sys.stdin.read().strip().split()\n    numeral = parts[0]\n    base = int(parts[1])\n    return int(numeral, base)\n\nprint(solve())\n\n# 2F 16 → 47   (same as the four-liner)\n# Sample: stdin  1011 2  → prints 11\n# Sample: stdin  77 8    → prints 63",
                         coachNote: "Have Soha change only the sample in her head: ‘If I type 77 8, what prints?’ Wait for 63. Then run it."
                     ),
                     SlideCard(
@@ -1307,7 +1408,7 @@ SlideCard(
                         title: "Week 5 · Sep 14 · meeting (90 min) · recursion tables + def f",
                         bullets: [
                             "0:00–0:15  Week 4 paper spot-check.",
-                            "0:15–0:55  Recursion in English. Table method. f(0)=1, f(n)=n+f(n-1) up to f(4)=11. Ban the word factorial.",
+                            "0:15–0:55  Recursion English. First rows 0–2 freeze. Table through 4. Simple do-now. Piecewise only if the table is solid.",
                             "0:55–1:25  Lab: def f(n) with return. print(f(0))…print(f(4)). Then print vs return slide — show the broken print-inside version if time.",
                             "1:25–1:30  Week 5 homework."
                         ],
@@ -1327,7 +1428,64 @@ SlideCard(
                         diagram: "Plates:\nf(0) = 1          ← empty extra ‘ghost’ plate ACSL gave us as the stop\nf(1) = 1 + f(0) = 2\nf(2) = 2 + f(1) = 4\nf(3) = 3 + f(2) = 7\nf(4) = 4 + f(3) = 11\n\nThis is NOT factorial. Factorial would multiply. We added.",
                         coachNote: "Ban the word factorial until they finish the table. Middle schoolers who just finished n! will try to multiply and miss the point."
                     ),
+                                        SlideCard(
+                        title: "Same function idea — the recipe now calls itself",
+                        bullets: [
+                            "Last week, double(n) used n and stopped. Recursion is a recipe that uses its OWN name, on a SMALLER number.",
+                            "f(4) asks f(3). f(3) asks f(2). That would never end unless someone says STOP. The stop is the base case: f(0) is given.",
+                            "You already know def, return, and calling f(5). Recursion is those skills plus ‘call f with a smaller n’ plus ‘stop at 0.’",
+                            "On the contest you usually do not think about the stack of calls. You fill a table from 0 upward. Same answers."
+                        ],
+                        diagram: "double(5)  →  10     (does not call double again)\n\nf(4) → needs f(3)\nf(3) → needs f(2)\nf(2) → needs f(1)\nf(1) → needs f(0)\nf(0) = 1     STOP, given",
+                        coachNote: "Point at hello() then at f. ‘Same def. New trick: the recipe says its own name.’"
+                    ),
                     SlideCard(
+                        title: "Build the first rows — only f(0), then f(1), then f(2)",
+                        bullets: [
+                            "Rule: f(0)=1.  When n>0, f(n)= n + f(n-1). Addition, not multiply.",
+                            "Row 0: they gave us 1. Write it. Do not invent f(0)=0.",
+                            "Row 1: n=1, so 1 + f(0) = 1+1 = 2. You only needed the row above.",
+                            "Row 2: n=2, so 2 + f(1) = 2+2 = 4.",
+                            "If you feel lost, you skipped a row. Go back one n. Never jump to f(4) in your head tonight."
+                        ],
+                        diagram: "n | f(n) | what I wrote\n0 |  1   | given. stop.\n1 |  2   | 1 + f(0) = 1+1\n2 |  4   | 2 + f(1) = 2+2\n\nStop here. Check with a neighbor. Then we add rows 3 and 4.",
+                        coachNote: "Freeze after f(2). Three volunteers: row 0, 1, 2. Then continue."
+                    ),
+                    SlideCard(
+                        title: "Rows 3 and 4 — still only the row above",
+                        bullets: [
+                            "Row 3: 3 + f(2) = 3+4 = 7.",
+                            "Row 4: 4 + f(3) = 4+7 = 11.",
+                            "If they ask f(4), box 11. If they ask f(3), box 7. Copy the n they asked, not the last number you like.",
+                            "Common miss: multiplying (1,1,2,6,24) — that is factorial, a different recipe. Ours adds.",
+                            "Another miss: starting at n=1 as the first row and then calling that f(4) when you have four scribbles."
+                        ],
+                        diagram: "n | f(n)\n0 |  1\n1 |  2\n2 |  4\n3 |  7     3+4\n4 | 11     4+7   ← f(4)\n5 | 16     5+11\n6 | 22     6+16",
+                        coachNote: "Ask f(4) and wait for 11. Then ask f(3) on purpose so they do not always grab the bottom."
+                    ),
+                    SlideCard(
+                        title: "Do now · one simple table (3 min)",
+                        bullets: [
+                            "Same rule: f(0)=1, f(n)=n+f(n-1). Silent. Fill n=0 through 5.",
+                            "Q1. f(5)",
+                            "Q2. f(2)",
+                            "Q3. True or false: f(5) is 5×f(4)."
+                        ],
+                        diagram: "Q1 16\nQ2 4\nQ3 false  (it is 5 PLUS f(4), so 5+11=16)",
+                        coachNote: "If Q3 is true they are in factorial land. Rebuild row 5 together."
+                    ),
+                    SlideCard(
+                        title: "How ACSL writes the rule — two lines, read the stop first",
+                        bullets: [
+                            "They print a curly two-line recipe. Line A is often the recursive case. Line B is the stop. Read BOTH before you compute.",
+                            "Always find the stop first: which n (or which test) does NOT call f again?",
+                            "Then: start at the n they asked. Apply the matching line. Write the new call. Repeat until stop. Then add/multiply backward, or use a table from the stop upward.",
+                            "If two numbers are ‘given’ (Fibonacci), you have TWO stop rows. Fill both before the recipe that uses n-1 and n-2."
+                        ],
+                        diagram: "They write:\n  f(n) = n + f(n-1)    if n > 0\n       = 1             if n = 0\n\nYou write:\n  stop: f(0)=1\n  then table upward.",
+                        coachNote: "Cover the recursive line. ‘Where do we stop?’ Then uncover."
+                    ),
+SlideCard(
                         title: "Contest method: fill a table (this is how you score the point)",
                         bullets: [
                             "Draw two columns: n and f(n).",
@@ -1339,7 +1497,18 @@ SlideCard(
                         diagram: " f(0)=1,  f(n)=n+f(n-1)\n\n n | f(n) | how I got it\n 0 |  1   | given\n 1 |  2   | 1 + 1\n 2 |  4   | 2 + 2\n 3 |  7   | 3 + 4\n 4 | 11   | 4 + 7     ← if they ask f(4), box 11",
                         coachNote: "Have Soha copy this exact table format on every recursion question for the rest of the season."
                     ),
-                    SlideCard(
+                                        SlideCard(
+                        title: "Unfolding f(3) once — then we go back to the table",
+                        bullets: [
+                            "Some people like to write f(3)=3+f(2)=3+2+f(1)=3+2+1+f(0)=3+2+1+1=7. That is legal.",
+                            "It gets messy at f(7). The table is the same work, neater, harder to drop a plus.",
+                            "Contest habit: table. Unfolding is only to see why the table is allowed.",
+                            "If you unfold, you must still hit the stop. Forgetting f(0)=1 gives a chain that never ends."
+                        ],
+                        diagram: "Unfold:\nf(3)=3+f(2)\n    =3+2+f(1)\n    =3+2+1+f(0)\n    =3+2+1+1=7\n\nTable (same 7):\n0→1, 1→2, 2→4, 3→7",
+                        coachNote: "One unfold on the board. Then ‘we will not do this for f(12). Table.’"
+                    ),
+SlideCard(
                         title: "Contest shape: piecewise f(x) with several cutoffs",
                         bullets: [
                             "ACSL recursive functions often look like a stacked rule: different formulas depending on how big x is.",
@@ -1385,7 +1554,19 @@ SlideCard(
                         diagram: "Example: Stage 1: 4 segments\nEach later stage adds 8 more segments.\n\nStage | new | total\n  1   |  4  |  4\n  2   |  8  | 12\n  3   |  8  | 20\n  4   |  8  | 28\n  5   |  8  | 36\n  6   |  8  | 44     ← asked\n\nIf NEW grows (4,8,12,16…), add a ‘new’ column that goes up by 4.",
                         coachNote: "If they freeze on the art, say: ‘Ignore the pretty picture. Steal the numbers they already computed for Stage 1–3, then continue the table.’"
                     ),
-                    SlideCard(
+                                        SlideCard(
+                        title: "Python: if only as a STOP — not the full if/else unit yet",
+                        bullets: [
+                            "Week 7 is hallway if/else. Tonight we need one tiny if: ‘if we are at the stop, return the given number.’",
+                            "if n == 0:  means ‘if n is equal to 0.’ Two equals. Then indent the return 1.",
+                            "The other return (the one that calls f(n-1)) is NOT in that indent. It runs when n is not 0.",
+                            "We are not tracing two hallways. We are labeling STOP vs KEEP GOING.",
+                            "If you write if n = 0 with one equals, Python errors. == asks. = puts in a box."
+                        ],
+                        diagram: "if n == 0:\n    return 1      # STOP\nreturn n + f(n-1) # KEEP GOING (not indented under the if)\n\n# == asks  ‘is n zero?’\n# =  puts  ‘make n zero’  ← wrong here",
+                        coachNote: "Cover the keep-going line. ‘What happens at 0?’ Then uncover. Do not open elif tonight."
+                    ),
+SlideCard(
                         title: "Python: recursion is just the table, written as a function",
                         bullets: [
                             "def f(n): starts a function named f that needs one number n.",
@@ -1408,6 +1589,18 @@ SlideCard(
                         ],
                         diagram: "def f(n):\n    if n == 0:\n        return 1     # NOT print(1)\n    return n + f(n - 1)\n\nprint(f(4))          # ONE line: 11\n\n# Broken:\ndef broken(n):\n    if n == 0:\n        print(1)     # shows 1, but returns None\n        return\n    return n + broken(n - 1)  # crash: None + int",
                         coachNote: "Say: ‘return is for math between function calls. print is the postcard you mail to the grader, once.’"
+                    ),
+                    SlideCard(
+                        title: "Forgot the stop — paper never ends, Python RecursionError",
+                        bullets: [
+                            "If the recipe always calls f(n-1) and never has if n==0, the chain has no floor.",
+                            "On paper that is an infinite scribble. You never get a number to box.",
+                            "In Python: RecursionError: maximum recursion depth exceeded. Too many nested calls.",
+                            "Fix: a base case that RETURNS a number and does not call f.",
+                            "Wrong stop is also a bug: if n==1: return 1 when the paper said f(0)=1 will shift every later row."
+                        ],
+                        diagram: "Missing stop:\ndef f(n):\n    return n + f(n-1)\n# f(3) → f(2) → f(1) → f(0) → f(-1) → … boom\n\nWrong stop:\nif n == 1: return 1   # skips the f(0)=1 row",
+                        coachNote: "Run the missing-stop version once if the lab is open. Then add the if. Same 30-second demo every year."
                     ),
                     SlideCard(
                         title: "Week 5 homework · ~1 hour (due Sep 21)",
@@ -1444,7 +1637,18 @@ SlideCard(
                         diagram: " n | f(n)\n 0 |  2\n 1 |  3     1*2+1\n 2 |  7     2*3+1\n 3 | 22     3*7+1\n 4 | 89     4*22+1",
                         coachNote: "Ask: ‘What is the base case?’ Wait for ‘f(0)=2’. Then ‘what do I do each step?’ Wait for ‘multiply by n, then add 1.’"
                     ),
-                    SlideCard(
+                                        SlideCard(
+                        title: "Do now · multiply-and-add table (2 min)",
+                        bullets: [
+                            "f(0)=2, f(n)=n×f(n-1)+1.",
+                            "Q1. f(1)",
+                            "Q2. f(3)",
+                            "Q3. If they ask f(3), is 89 the answer?"
+                        ],
+                        diagram: "Q1 3\nQ2 22\nQ3 no  — 89 is f(4)",
+                        coachNote: "The 89 trap is the same as 17 vs 33 later."
+                    ),
+SlideCard(
                         title: "Python: another recursive function (the multiply-and-add one)",
                         bullets: [
                             "Paper rule: f(0)=2, f(n)= n * f(n-1) + 1.",
@@ -1467,7 +1671,53 @@ SlideCard(
                         diagram: "Grid (x down, y across). Edges are 1:\n       y=0  y=1  y=2\n x=0    1    1    1\n x=1    1    2    3     ← 1+1=2, then 2+1=3\n x=2    1    3    6     ← 1+2=3, then 3+3=6",
                         coachNote: "Project the empty grid. Fill it with the class like a tiny KenKen. Never let them recurse two arguments in their head."
                     ),
+                                        SlideCard(
+                        title: "Even/odd — check EACH row, then use that row’s rule",
+                        bullets: [
+                            "f(0)=0. If n even: f(n)=f(n-1)+n. If n odd: f(n)=f(n-1)-1.",
+                            "Even means n%2==0, or n is in 2,4,6,8… Odd: 1,3,5,7… Check the NEW n every row. Do not pick one rule for the whole table.",
+                            "n=1 odd: f(0)-1 = 0-1 = -1. Negatives are allowed.",
+                            "n=2 even: f(1)+2 = -1+2 = 1.",
+                            "n=3 odd: f(2)-1 = 1-1 = 0."
+                        ],
+                        diagram: "n | even? | f(n)\n0 | stop  |  0\n1 | odd   | -1     f(0)-1\n2 | even  |  1     f(1)+2\n3 | odd   |  0     f(2)-1\n4 | even  |  4     f(3)+4",
+                        coachNote: "Write EVEN/ODD in the middle column every time. The miss is using +n on an odd row."
+                    ),
                     SlideCard(
+                        title: "Do now · even/odd table (3 min)",
+                        bullets: [
+                            "Same rule as the last slide. Fill through n=4.",
+                            "Q1. f(2)",
+                            "Q2. f(4)",
+                            "Q3. Did n=3 use +n or −1?"
+                        ],
+                        diagram: "Q1 1\nQ2 4\nQ3 −1  (odd)",
+                        coachNote: "If Q2 is 6 they added 4 to f(2) and skipped a row."
+                    ),
+                    SlideCard(
+                        title: "Two-argument grid — fill edges, then left plus above",
+                        bullets: [
+                            "f(x,y)=f(x-1,y)+f(x,y-1), and if x=0 or y=0 then f=1. Two ingredients, like add(a,b), but it calls itself.",
+                            "Do not recurse in your head. Draw a grid. x down, y across.",
+                            "Fill the whole 0-row with 1s. Fill the whole 0-column with 1s. Those are the stops.",
+                            "Each empty square = LEFT neighbor + ABOVE neighbor. Walk left-to-right, top-to-bottom.",
+                            "f(2,2) is the square at row x=2, column y=2. After filling, it is 6."
+                        ],
+                        diagram: "       y=0  y=1  y=2\n x=0    1    1    1\n x=1    1    2    3\n x=2    1    3    6\n\n2 = 1+1 (left+above)\n3 = 2+1\n6 = 3+3",
+                        coachNote: "Empty grid on the projector. Class calls out each interior square."
+                    ),
+                    SlideCard(
+                        title: "Do now · grid f(2,2) (3 min)",
+                        bullets: [
+                            "Same edge-1 grid. Fill it.",
+                            "Q1. f(1,1)",
+                            "Q2. f(2,1)",
+                            "Q3. f(2,2)"
+                        ],
+                        diagram: "Q1 2\nQ2 3\nQ3 6",
+                        coachNote: "If they say f(2,2)=4 they added 2+2 from the rule in their head."
+                    ),
+SlideCard(
                         title: "Contest shape: named recipes — factorial and Fibonacci",
                         bullets: [
                             "ACSL recursive-functions wiki starts with names you may hear: factorial and Fibonacci. Same table method.",
@@ -1477,6 +1727,18 @@ SlideCard(
                         ],
                         diagram: "n! :  n  0 1 2 3  4   5\n       f  1 1 2 6 24 120\n\nFib: n  0 1 2 3 4 5 6 7\n      f  0 1 1 2 3 5 8 13",
                         coachNote: "Names are optional vocabulary. The table is the point."
+                    ),
+                    SlideCard(
+                        title: "Two stop rows — Fibonacci-style (n-1 and n-2)",
+                        bullets: [
+                            "Some recipes need TWO previous answers. You cannot start at only n=0.",
+                            "Write BOTH given rows first: f(0)=0 and f(1)=1. Those are two stops, not one.",
+                            "Row 2 uses both: f(1)+f(0)=1+0=1. Row 3: f(2)+f(1)=1+1=2. Always the two rows above.",
+                            "If you only fill f(0) and then try f(2), you are missing a row. The recipe is illegal until f(1) exists.",
+                            "Contest cousin: g(n)=g(n-1)+g(n-2)+1. Same table, extra +1 each time."
+                        ],
+                        diagram: "n | f(n) | how\n0 |  0   | given (stop 1)\n1 |  1   | given (stop 2)\n2 |  1   | 1+0\n3 |  2   | 1+1\n4 |  3   | 2+1\n5 |  5   | 3+2",
+                        coachNote: "Cover row 1. Ask why f(2) is stuck. Uncover. Two volunteers own the two base rows."
                     ),
                     SlideCard(
                         title: "Contest shape: when x is negative — the other stopping rule",
