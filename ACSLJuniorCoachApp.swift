@@ -195,6 +195,7 @@ private struct ACSLJuniorCoachRootView: View {
                     )
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .environment(\.presentationModeEnabled, presentationMode)
             .environment(\.teachingScale, presentationMode ? 1.42 : 1.0)
         }
@@ -1987,7 +1988,7 @@ SlideCard(
                         bullets: [
                             "0:00–0:15  If/else homework.",
                             "0:15–0:40  Hidden-test mistakes. Three mini programs A/B/C (convert, f(4), if/elif).",
-                            "0:40–1:10  Team Mock Exams → Contest 1 (6 short-answer: 2+2+2). Quiet. Then reveal keys and walk misses.",
+                            "0:40–1:10  Team Mock Exams → Contest 1 Sitting A (6 short-answer: 2+2+2). Quiet. Then reveal keys. Extra sittings B–D are in the same tab.",
                             "1:10–1:25  Contest-day checklist. One combined .py: convert or recurse as assigned, print only the answer.",
                             "1:25–1:30  Light homework: sleep and a short mixed review, no new topics."
                         ],
@@ -2006,7 +2007,7 @@ SlideCard(
                             "Q6. Hours=50, rate=10. if h>48 then r:=r+5. if h>40 then r:=r+(h-40)*2. Final r?"
                         ],
                         diagram: "Answers (reveal after the timer):\nQ1 4\nQ2 57₈\nQ3 29\nQ4 -3\nQ5 4 5\nQ6 35  (both IFs run)",
-                        coachNote: "Grade like ACSL: exact. Then walk only the misses. Send them to Team Mock Exams for a second 6."
+                        coachNote: "Grade like ACSL: exact. Then walk only the misses. Team Mock Exams has Contest 1 sittings A–D (different numbers). Official ACSL also posts one Junior sample PDF per contest plus wiki samples; extra years are sold on the ACSL registration page."
                     ),
                     SlideCard(
                         title: "Python mistakes that fail ACSL hidden tests",
@@ -3395,31 +3396,55 @@ private struct TeamMockExamsView: View {
     let selectedStudentName: String
     @Binding var revealKeys: Bool
     @State private var contestPick = 1
+    @State private var sittingPick = 0
     @State private var responses: [String] = Array(repeating: "", count: 6)
     @Environment(\.teachingScale) private var scale
 
+    private var sittings: [MockExam] {
+        Self.exams.filter { $0.contest == contestPick }
+    }
+
+    private var exam: MockExam {
+        let list = sittings
+        guard !list.isEmpty else {
+            return MockExam(contest: contestPick, title: "Empty", questions: [])
+        }
+        return list[min(sittingPick, list.count - 1)]
+    }
+
     var body: some View {
-        let exam = Self.exams[contestPick - 1]
         VStack(alignment: .leading, spacing: 0) {
-            HStack {
-                VStack(alignment: .leading) {
-                    Text("Team mock · \(exam.questions.count) short-answer questions")
-                        .font(.system(size: 22 * scale, weight: .bold, design: .rounded))
-                    Text("Focus student: \(selectedStudentName). ACSL Junior paper is 6 questions (2 per topic). Programming is a separate 72-hour HackerRank problem (5 pts).")
-                        .font(.system(size: 13 * scale))
-                        .foregroundStyle(.secondary)
-                }
-                Spacer()
+            VStack(alignment: .leading, spacing: 10) {
+                Text("Team mock · \(exam.title)")
+                    .font(.system(size: 22 * scale, weight: .bold, design: .rounded))
+                Text("Focus student: \(selectedStudentName). Junior paper is 6 questions (2 per topic). Official ACSL sample contests: acsl.org/get-started/study-materials.")
+                    .font(.system(size: 13 * scale))
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 Picker("Round", selection: $contestPick) {
                     ForEach(1...4, id: \.self) { Text("Contest \($0)").tag($0) }
                 }
                 .pickerStyle(.segmented)
-                .frame(maxWidth: 420)
-                .onChange(of: contestPick) { _, _ in
-                    responses = Array(repeating: "", count: 6)
+                .frame(maxWidth: 480)
+                if sittings.count > 1 {
+                    Picker("Sitting", selection: $sittingPick) {
+                        ForEach(0..<sittings.count, id: \.self) { idx in
+                            Text(sittingLabel(sittings[idx].title, index: idx)).tag(idx)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    .frame(maxWidth: 480)
                 }
             }
             .padding(16)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .onChange(of: contestPick) { _, _ in
+                sittingPick = 0
+                responses = Array(repeating: "", count: 6)
+            }
+            .onChange(of: sittingPick) { _, _ in
+                responses = Array(repeating: "", count: 6)
+            }
 
             HStack {
                 Button(revealKeys ? "Hide solution keys" : "Reveal Solution Keys") {
@@ -3431,10 +3456,11 @@ private struct TeamMockExamsView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 Spacer()
-                Text("Short-answer score preview: \(score(exam))/\(exam.questions.count)")
+                Text("Short-answer score preview: \(score(exam))/\(max(exam.questions.count, 1))")
                     .font(.headline.monospaced())
             }
             .padding(.horizontal, 16)
+            .padding(.bottom, 8)
 
             ScrollView {
                 VStack(alignment: .leading, spacing: 14) {
@@ -3442,16 +3468,22 @@ private struct TeamMockExamsView: View {
                         VStack(alignment: .leading, spacing: 8) {
                             Text("Q\(idx + 1). \(q.prompt)")
                                 .font(.system(size: 15 * scale, weight: .semibold))
-                            TextField("Answer", text: $responses[idx])
-                                .textFieldStyle(.roundedBorder)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            if idx < responses.count {
+                                TextField("Answer", text: $responses[idx])
+                                    .textFieldStyle(.roundedBorder)
+                            }
                             if revealKeys {
-                                VStack(alignment: .leading, spacing: 4) {
+                                VStack(alignment: .leading, spacing: 8) {
                                     Text("Key: \(q.answer)")
-                                        .font(.system(size: 14 * scale, weight: .bold, design: .monospaced))
+                                        .font(.system(size: 16 * scale, weight: .bold, design: .monospaced))
+                                    Text("Step-by-step")
+                                        .font(.system(size: 12 * scale, weight: .semibold))
+                                        .foregroundStyle(.orange)
                                     Text(q.derivation)
                                         .font(.system(size: 13 * scale))
-                                        .foregroundStyle(.secondary)
-                                        .fixedSize(horizontal: false, vertical: true)
+                                        .foregroundStyle(.primary)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
                                 }
                                 .padding(10)
                                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -3459,18 +3491,29 @@ private struct TeamMockExamsView: View {
                             }
                         }
                         .padding(12)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12))
                     }
                 }
                 .padding(16)
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 
     private func score(_ exam: MockExam) -> Int {
         zip(responses, exam.questions).reduce(0) { acc, pair in
             acc + (normalize(pair.0) == normalize(pair.1.answer) ? 1 : 0)
         }
+    }
+
+    private func sittingLabel(_ title: String, index: Int) -> String {
+        if let range = title.range(of: "Sitting ") {
+            return String(title[range.lowerBound...])
+        }
+        return "Sitting \(Character(UnicodeScalar(65 + index)!))"
     }
 
     private func normalize(_ s: String) -> String {
@@ -3480,63 +3523,367 @@ private struct TeamMockExamsView: View {
     }
 
     private static let exams: [MockExam] = [
-        MockExam(contest: 1, title: "Contest 1", questions: [
+        MockExam(contest: 1, title: "Contest 1 · Sitting A", questions: [
             MockQuestion(prompt: "How many 1s in the binary of 45?", answer: "4",
-                         derivation: "45=101101₂. Count 1s: four. Not the value 45."),
+                         derivation: """
+                            1. Write place values from the right: 1, 2, 4, 8, 16, 32, 64, …
+                            2. Make 45 with those: 32+8+4+1 = 45. So bits: 32 yes, 16 no, 8 yes, 4 yes, 2 no, 1 yes.
+                            3. Binary: 101101.
+                            4. Count the 1s only: four 1s. The answer is 4, not 45, and not 6 (that is how many bits).
+                            """),
             MockQuestion(prompt: "Convert 2F16 to octal (binary bridge).", answer: "57",
-                         derivation: "2=0010, F=1111 → 00101111 → groups of 3: 101 111 → 57₈."),
+                         derivation: """
+                            1. Each hex digit → 4 bits. 2 = 0010. F = 15 = 1111.
+                            2. Glue: 00101111.
+                            3. Octal wants groups of 3 from the RIGHT. 8 bits is not a multiple of 3, so pad a 0 on the LEFT: 000101111.
+                            4. Groups: 000 101 111 → 0 5 7. Drop the leading 0 → 57₈.
+                            5. Check in decimal: 2F₁₆ = 32+15 = 47. 5×8+7 = 47. Same number. Answer 57.
+                            """),
             MockQuestion(prompt: "f(0)=1, f(n)=n+f(n-1). Find f(f(3)).", answer: "29",
-                         derivation: "f(3)=7 first. Then f(7)=29 from the table."),
+                         derivation: """
+                            1. Inside first: f(f(3)) means compute f(3), then plug that number into f.
+                            2. Table from the stop. f(0)=1 given.
+                               f(1)=1+f(0)=1+1=2
+                               f(2)=2+f(1)=2+2=4
+                               f(3)=3+f(2)=3+4=7
+                            3. So f(3)=7. Now we need f(7). Keep the table going:
+                               f(4)=4+7=11
+                               f(5)=5+11=16
+                               f(6)=6+16=22
+                               f(7)=7+22=29
+                            4. Box 29. Trap: answering 7 (stopped at the inside). Trap: multiplying (factorial).
+                            """),
             MockQuestion(prompt: "g(x)=g(x-3)+1 if x>0 else 3x. Find g(7).", answer: "-3",
-                         derivation: "g(7)=g(4)+1=g(1)+1+1=g(-2)+1+1+1. g(-2)=3*(-2)=-6. Then -6+3=-3."),
+                         derivation: """
+                            1. Stop rule first: if x is NOT > 0 (zero or negative), g(x)=3x. No more calls.
+                            2. 7>0, so g(7)=g(4)+1.
+                            3. 4>0, so g(4)=g(1)+1.
+                            4. 1>0, so g(1)=g(-2)+1.
+                            5. -2 is not >0, so g(-2)=3×(-2)=-6. Stop.
+                            6. Walk back, one +1 per step: g(1)=-6+1=-5. g(4)=-5+1=-4. g(7)=-4+1=-3.
+                            7. Three +1s on -6 is -3. Answer -3 (negative is allowed).
+                            """),
             MockQuestion(prompt: "f(x,y)=f(x-y,y-1)+2 if x>y else x+y. Find f(5,3).", answer: "6",
-                         derivation: "5>3 so f(2,2)+2. 2>2 is false so 2+2=4. Then 4+2=6."),
+                         derivation: """
+                            1. Stop when x is NOT greater than y (including equal): then answer is x+y.
+                            2. Pair (5,3): 5>3 true → f(5-3, 3-1)+2 = f(2,2)+2.
+                            3. Pair (2,2): 2>2 false → f(2,2)=2+2=4. Stop.
+                            4. One pending +2: f(5,3)=4+2=6.
+                            5. Write the chain of pairs: (5,3) → (2,2) STOP 4, then +2.
+                            """),
             MockQuestion(prompt: "h=50, r=10. if h>48 then r:=r+5. if h>40 then r:=r+(h-40)*2. Final r?", answer: "35",
-                         derivation: "Classic overtime: both IFs can run. 50>48 so r=15. 50>40 so r=15+10*2=35.")
+                         derivation: """
+                            1. Two SEPARATE ifs. There is no else. Each test uses current values. h never changes (50 the whole time).
+                            2. First: 50>48? Yes. r := 10+5 = 15.
+                            3. Second: 50>40? Yes (still). Extra hours = 50-40=10. r := 15 + 10×2 = 15+20=35.
+                            4. Trap: thinking else so only one if runs → 15. Trap: using original r=10 on the second if → 10+20=30. Both wrong. Final r=35.
+                            """)
+        ]),
+        MockExam(contest: 1, title: "Contest 1 · Sitting B", questions: [
+            MockQuestion(prompt: "Convert 110101₂ to decimal.", answer: "53",
+                         derivation: """
+                            1. Label bits from the RIGHT: 1×1 + 0×2 + 1×4 + 0×8 + 1×16 + 1×32.
+                            2. Add the ON bits: 1+4+16+32.
+                            3. 1+4=5, 5+16=21, 21+32=53.
+                            4. Check: 32+16+4+1=53. Answer 53, not 110101, not ‘how many 1s’ (that is 4).
+                            """),
+            MockQuestion(prompt: "Convert 53₈ to hexadecimal (binary bridge).", answer: "2B",
+                         derivation: """
+                            1. Each octal digit is 3 bits. 5=101, 3=011.
+                            2. Glue: 101011.
+                            3. Hex wants groups of 4 from the RIGHT. 101011 is 6 bits; pad LEFT with 00: 0010 1011.
+                            4. 0010=2, 1011=8+2+1=11=B. So 2B₁₆.
+                            5. Check: 53₈=5×8+3=43 decimal. 2B₁₆=2×16+11=43. Matches.
+                            """),
+            MockQuestion(prompt: "f(0)=2, f(n)=n×f(n-1)+1. Find f(3).", answer: "22",
+                         derivation: """
+                            1. Stop: f(0)=2. Each next row: multiply by n, then add 1.
+                            2. f(1)=1×2+1=3
+                            3. f(2)=2×3+1=7
+                            4. f(3)=3×7+1=22  ← they asked f(3), box 22.
+                            5. f(4)=4×22+1=89. If you boxed 89 you went one row too far.
+                            """),
+            MockQuestion(prompt: "f(0)=0. Even n: f(n)=f(n-1)+n. Odd n: f(n)=f(n-1)-1. Find f(4).", answer: "4",
+                         derivation: """
+                            1. Write a middle column EVEN/ODD for every n. New n, new test.
+                            2. n=0 stop: 0
+                            3. n=1 odd: f(0)-1 = 0-1 = -1
+                            4. n=2 even: f(1)+2 = -1+2 = 1
+                            5. n=3 odd: f(2)-1 = 1-1 = 0
+                            6. n=4 even: f(3)+4 = 0+4 = 4
+                            7. Trap: using +n on every row, or skipping n=3. Answer 4.
+                            """),
+            MockQuestion(prompt: "x=7. if x>5 then x:=x-2. if x>5 then x:=x+10. Final x? (two separate IFs)", answer: "5",
+                         derivation: """
+                            1. Start x=7. Two separate ifs — the second sees the NEW x.
+                            2. First: 7>5? Yes. x := 7-2 = 5.
+                            3. Second: is 5>5? No. Skip x:=x+10.
+                            4. Final x=5. Trap: using original 7 on both tests → 7-2=5 then 7>5 so +10 → 15. Wrong because x already changed.
+                            """),
+            MockQuestion(prompt: "a=3, b=8. if a<b then a:=a+b else b:=b-a. Then if a>10 then a:=a-5. Final a?", answer: "6",
+                         derivation: """
+                            1. Start a=3, b=8.
+                            2. First fork: 3<8? Yes, take THEN: a := 3+8 = 11. ELSE (b:=b-a) does not run. b stays 8.
+                            3. Second if (separate): a>10? 11>10 yes. a := 11-5 = 6.
+                            4. They asked for a, not b. Answer 6.
+                            """)
+        ]),
+        MockExam(contest: 1, title: "Contest 1 · Sitting C", questions: [
+            MockQuestion(prompt: "How many bits are needed to write 100 in binary?", answer: "7",
+                         derivation: """
+                            1. This is NOT ‘how many 1s’. It is ‘how long is the binary string’.
+                            2. Largest power of 2 ≤ 100 is 64. 100-64=36. Next 32. 36-32=4. Then 4. So 64+32+4.
+                            3. Bits from 64 down to 1: 1 (64), 1 (32), 0 (16), 0 (8), 1 (4), 0 (2), 0 (1) → 1100100.
+                            4. Count digits: 7. Check: 2^6=64, so numbers 64–127 need 7 bits. 100 is in that range.
+                            """),
+            MockQuestion(prompt: "Add 1A₁₆ + 7₁₆. Give the sum in hexadecimal.", answer: "21",
+                         derivation: """
+                            1. 1A₁₆ = 1×16 + 10 = 26 decimal (A=10).
+                            2. 7₁₆ = 7 decimal.
+                            3. 26+7=33 decimal.
+                            4. 33 in hex: 2×16=32, remainder 1 → 21₁₆.
+                            5. Hex add: A+7=10+7=17=11₁₆, write 1 carry 1. Then 1+carry 1=2. Same 21.
+                            """),
+            MockQuestion(prompt: "f(0)=1, f(n)=n+f(n-1). Find f(f(2)). Inside first.", answer: "11",
+                         derivation: """
+                            1. Inside first: find f(2), then f(of that).
+                            2. f(0)=1
+                               f(1)=1+1=2
+                               f(2)=2+2=4
+                            3. Now f(4). Continue:
+                               f(3)=3+4=7
+                               f(4)=4+7=11
+                            4. Answer 11. Trap: saying 4 (forgot the outer f). Trap: saying 8 (did f twice as 2+2+2+2).
+                            """),
+            MockQuestion(prompt: "f(x,y)=f(x-1,y)+f(x,y-1), and f=1 if x=0 or y=0. Find f(2,2) using a grid.", answer: "6",
+                         derivation: """
+                            1. Draw x down, y across. Fill the 0-row with 1s. Fill the 0-column with 1s.
+                            2. Each empty square = LEFT + ABOVE. Walk left to right, top to bottom.
+                                   y0 y1 y2
+                               x0   1  1  1
+                               x1   1  2  3     (1+1=2, then 2+1=3)
+                               x2   1  3  6     (1+2=3, then 3+3=6)
+                            3. f(2,2) is the bottom-right square: 6.
+                            4. Trap: 2+2=4 from the formula in your head without filling neighbors.
+                            """),
+            MockQuestion(prompt: "n=12. if n>10 then (if n>15 then n:=n-8 else n:=n-3) else n:=n+2. Final n?", answer: "9",
+                         derivation: """
+                            1. Outer test first: 12>10? Yes. Enter the INNER if. Outer else n:=n+2 is skipped.
+                            2. Inner: 12>15? No. Take inner ELSE: n := 12-3 = 9.
+                            3. Inner THEN (n-8) does not run.
+                            4. Final n=9. Trap: +2 from the outer else (you already left that hallway). Trap: 12-8=4 (wrong inner branch).
+                            """),
+            MockQuestion(prompt: "h=4, k=1. if h is even then k:=k+h else k:=k-1. Then if k>4 then k:=k*2. Final k?", answer: "10",
+                         derivation: """
+                            1. h=4 is even, so THEN: k := 1+4 = 5. Else k-1 skipped.
+                            2. Next if (separate): k>4? 5>4 yes. k := 5×2 = 10.
+                            3. h never changes. They asked k. Answer 10.
+                            """)
+        ]),
+        MockExam(contest: 1, title: "Contest 1 · Sitting D", questions: [
+            MockQuestion(prompt: "Convert 3E₁₆ to octal (binary bridge).", answer: "76",
+                         derivation: """
+                            1. Hex digits to 4 bits: 3=0011. E=14=1110.
+                            2. Glue: 00111110.
+                            3. Octal: groups of 3 from the RIGHT. 00111110 is 8 bits; pad LEFT with 0: 000111110.
+                            4. Groups: 000 111 110 = 0 7 6. Drop leading 0 → 76₈.
+                            5. Check: 3E₁₆=3×16+14=62. 7×8+6=62. Matches.
+                            """),
+            MockQuestion(prompt: "Add 1011₂ + 1101₂. Give the sum in decimal.", answer: "24",
+                         derivation: """
+                            1. Convert each to decimal first (safest on paper).
+                            2. 1011₂ = 8+0+2+1 = 11.
+                            3. 1101₂ = 8+4+0+1 = 13.
+                            4. 11+13=24. That is the answer they asked (decimal).
+                            5. Binary add check: 1011+1101=11000₂ = 16+8=24. Same.
+                            """),
+            MockQuestion(prompt: "g(x)=g(x-3)+1 if x>0 else 3x. Find g(4).", answer: "-4",
+                         derivation: """
+                            1. Same rule as g(7) on Sitting A, different start. Stop when x≤0: g(x)=3x.
+                            2. 4>0 → g(4)=g(1)+1
+                            3. 1>0 → g(1)=g(-2)+1
+                            4. -2≤0 → g(-2)=3×(-2)=-6
+                            5. Back: g(1)=-6+1=-5. g(4)=-5+1=-4.
+                            6. Two +1s, not three (g(7) had three steps). Answer -4, not -3.
+                            """),
+            MockQuestion(prompt: "g(0)=0, g(1)=1, g(n)=g(n-1)+g(n-2)+1. Find g(5). Two previous rows.", answer: "12",
+                         derivation: """
+                            1. TWO stop rows: write g(0)=0 and g(1)=1 before anything else.
+                            2. g(2)=g(1)+g(0)+1 = 1+0+1 = 2
+                            3. g(3)=g(2)+g(1)+1 = 2+1+1 = 4
+                            4. g(4)=g(3)+g(2)+1 = 4+2+1 = 7
+                            5. g(5)=g(4)+g(3)+1 = 7+4+1 = 12
+                            6. Trap: Fibonacci without the extra +1 (would be 5). Trap: missing g(1) and jumping.
+                            """),
+            MockQuestion(prompt: "s=0. if 8>3 then s:=s+2. if 8>10 then s:=s+5 else s:=s+1. Final s?", answer: "3",
+                         derivation: """
+                            1. First line is a lone IF (no else): 8>3 true, s := 0+2 = 2.
+                            2. Second line is IF/ELSE — exactly one branch. 8>10? False. Take ELSE: s := 2+1 = 3.
+                            3. The THEN (+5) does not run.
+                            4. Final s=3. Trap: both +2 and +5. Trap: skipping the first if because you saw an else later.
+                            """),
+            MockQuestion(prompt: "t=20. if t>=20 then t:=t/2. if t>=20 then t:=t+3. Two separate IFs. Final t?", answer: "10",
+                         derivation: """
+                            1. Start t=20. Two separate ifs; second uses NEW t.
+                            2. First: 20>=20 yes. t := 20/2 = 10.
+                            3. Second: 10>=20? No. Do not add 3.
+                            4. Final t=10. Trap: 13 (halved then still added 3 using old t). Trap: 23 (both tests on original 20).
+                            """)
         ]),
         MockExam(contest: 2, title: "Contest 2", questions: [
             MockQuestion(prompt: "Evaluate postfix: 3 4 + 5 *", answer: "35",
-                         derivation: "Push 3,4; plus then 7; push 5; times then 35."),
+                         derivation: """
+                            1. Postfix: read left to right. Numbers go on a stack. An operator pops two, computes, pushes the result.
+                            2. See 3 → stack [3]. See 4 → [3, 4].
+                            3. See + → pop 4 and 3, 3+4=7, push [7].
+                            4. See 5 → [7, 5].
+                            5. See * → pop 5 and 7, 7×5=35, push [35].
+                            6. One number left: 35. (If you did 3+4×5 with infix order you might get 23 — wrong for postfix.)
+                            """),
             MockQuestion(prompt: "Infix (3+4)*5 as postfix?", answer: "3 4 + 5 *",
-                         derivation: "Parenthesize (3+4)*5. Operands 3 4 5. Plus first, then times."),
+                         derivation: """
+                            1. Infix with parens: plus happens before times.
+                            2. Operands stay in order: 3, then 4, then 5.
+                            3. After 3 and 4 you need +, then after that product with 5 you need *.
+                            4. Postfix: 3 4 + 5 *. Check by evaluating: 3 4 + → 7, then 7 5 * → 35, which matches (3+4)*5.
+                            """),
             MockQuestion(prompt: "1011 AND 1101 (4 bits)", answer: "1001",
-                         derivation: "AND bit by bit: 1001. Pad shorter strings on the LEFT."),
+                         derivation: """
+                            1. Line them up. AND is 1 only where BOTH bits are 1.
+                               1 0 1 1
+                            AND 1 1 0 1
+                            2. Column by column: 1, 0, 0, 1 → 1001.
+                            3. If lengths differ, ACSL pads 0s on the LEFT.
+                            """),
             MockQuestion(prompt: "RCIRC-1 of 01101?", answer: "10110",
-                         derivation: "Rotate right: the rightmost 1 comes to the front. SHIFT would fill 0."),
+                         derivation: """
+                            1. CIRC = rotate. Bits fall off one end and come back on the other. SHIFT would fill 0s instead.
+                            2. RCIRC-1: rightmost bit moves to the front. 01101, last bit is 1.
+                            3. Remaining 0110 gets that 1 in front: 10110.
+                            4. Check length still 5. LCIRC-1 would have been 11010.
+                            """),
             MockQuestion(prompt: "(RSHIFT-1 (LCIRC-4 (RCIRC-2 01101)))", answer: "01010",
-                         derivation: "RCIRC-2 -> 01011; LCIRC-4 -> 10101; RSHIFT-1 -> 01010."),
+                         derivation: """
+                            1. Inside first. Start with 01101.
+                            2. RCIRC-2 (rotate right twice):
+                               RCIRC-1: 10110
+                               RCIRC-2: 01011
+                            3. LCIRC-4 of 01011 (rotate left four times, length 5):
+                               LCIRC-1: 10110
+                               LCIRC-2: 01101
+                               LCIRC-3: 11010
+                               LCIRC-4: 10101
+                            4. RSHIFT-1 of 10101: bits move right, 0 fills the left. Rightmost 1 falls off → 01010.
+                            5. Answer 01010.
+                            """),
             MockQuestion(prompt: "ACSL: s=0; FOR i=1 TO 4 STEP 1; s=s+i; NEXT i. Output s?", answer: "10",
-                         derivation: "i=1,2,3,4 (end INCLUDED). Sum 10. Python range(1,4) would be 6.")
+                         derivation: """
+                            1. ACSL FOR includes BOTH ends. i = 1, 2, 3, 4. Not Python range(1,4).
+                            2. s starts 0.
+                               i=1: s=0+1=1
+                               i=2: s=1+2=3
+                               i=3: s=3+3=6
+                               i=4: s=6+4=10
+                            3. Answer 10. Trap: 6 from stopping before 4.
+                            """)
         ]),
 
         MockExam(contest: 3, title: "Contest 3", questions: [
             MockQuestion(prompt: "Simplify (A+B)' using DeMorgan.", answer: "A'B'",
-                         derivation: "(A+B)' = A' · B'. Dual: (AB)' = A'+B'."),
+                         derivation: """
+                            1. DeMorgan: break the bar and change + to · (AND), and put a bar on each piece.
+                            2. (A+B)' = A' · B'. Written A'B'.
+                            3. Dual reminder (not this answer): (AB)' = A'+B'.
+                            """),
             MockQuestion(prompt: "Simplify A + A' · 1  (AND before OR).", answer: "1",
-                         derivation: "A'·1=A', then A+A'=1."),
+                         derivation: """
+                            1. AND (·) before OR (+), like × before +.
+                            2. A' · 1 = A'  (AND with 1 does nothing).
+                            3. Now A + A'. Anything OR its complement is 1.
+                            4. Answer 1, not A, not A'.
+                            """),
             MockQuestion(prompt: "Stack: PUSH A, PUSH B, POP, PUSH C. Top to bottom (top first)?", answer: "C,A",
-                         derivation: "After pop [A]; push C so top is C then A."),
+                         derivation: """
+                            1. Stack = last in, first out. Top is the last push that was not popped.
+                            2. PUSH A → [A] (A on top)
+                            3. PUSH B → [B, A] (B on top)
+                            4. POP → removes B → [A]
+                            5. PUSH C → [C, A]
+                            6. Top to bottom: C, A. B is gone.
+                            """),
             MockQuestion(prompt: "Queue ENQ X, ENQ Y, DEQ. Front item?", answer: "Y",
-                         derivation: "FIFO: dequeue X; front is Y."),
+                         derivation: """
+                            1. Queue = first in, first out. Front is the oldest remaining item.
+                            2. ENQ X → front X
+                            3. ENQ Y → front X, then Y
+                            4. DEQ removes the front (X). Front is now Y.
+                            5. Answer Y. Trap: X (forgot the DEQ) or thinking stack so Y was popped.
+                            """),
             MockQuestion(prompt: "1-based: A(1)=2, A(2)=4, A(3)=6. A(2)=A(1)+A(3). A(2)?", answer: "8",
-                         derivation: "2+6=8 in place. Stem started at A(1), not Python a[0]."),
+                         derivation: """
+                            1. ACSL arrays start at 1, not Python 0.
+                            2. A(1)=2, A(3)=6. Sum 2+6=8.
+                            3. Store that into A(2). Old A(2)=4 is overwritten.
+                            4. Answer 8.
+                            """),
             MockQuestion(prompt: "A(1,2) in ACSL 2-D arrays means?", answer: "row 1, column 2",
-                         derivation: "Order is (row, col). Not (col, row).")
+                         derivation: """
+                            1. ACSL writes A(row, column). First number is the row, second is the column.
+                            2. A(1,2) is row 1, column 2.
+                            3. Not (column, row), and not Python a[1][2] zero-based.
+                            """)
         ]),
 
         MockExam(contest: 4, title: "Contest 4", questions: [
             MockQuestion(prompt: "Undirected A-B-C. How many walks of length 2 from A to C?", answer: "1",
-                         derivation: "Only A-B-C. Direct A-C is 0; (A^2)[A,C]=1."),
+                         derivation: """
+                            1. Path of edges: A—B—C. No extra edges.
+                            2. A walk of length 2 is two hops. From A: A-B-A (back) or A-B-C.
+                            3. Only A-B-C ends at C. Direct A-C would be length 1 and is not even an edge here.
+                            4. Count: 1.
+                            """),
             MockQuestion(prompt: "Directed edges AB,BA,BC,CD,DC,DB,DE. How many different cycles?", answer: "3",
-                         derivation: "Wiki: ABA, BCDB, CDC. Do not count rotations twice."),
+                         derivation: """
+                            1. A cycle returns to the start, no repeated vertex except start/end. Direction matters.
+                            2. AB and BA: cycle A-B-A.
+                            3. BC, CD, DB: cycle B-C-D-B.
+                            4. CD and DC: cycle C-D-C.
+                            5. DE has no way back from E, so no cycle through E.
+                            6. Do not count A-B-A and B-A-B as two: same cycle. Total 3.
+                            """),
             MockQuestion(prompt: "F = NOT(A AND B) OR C. Ordered triple that makes F FALSE?", answer: "1,1,0",
-                         derivation: "OR is 0 only if both sides 0: C=0 and NOT(AB)=0 so AB=1."),
+                         derivation: """
+                            1. OR is false only if BOTH sides are false. So we need C=0 AND NOT(A AND B)=0.
+                            2. NOT(A AND B)=0 means A AND B = 1, so A=1 and B=1.
+                            3. Triple (A,B,C)=(1,1,0). Check: NOT(1 AND 1) OR 0 = NOT(1) OR 0 = 0 OR 0 = 0. F is false. That is the one they asked.
+                            """),
             MockQuestion(prompt: "NAND of 1 and 1?", answer: "0",
-                         derivation: "AND is 1, NOT makes 0. NAND is 0 only on 1,1."),
+                         derivation: """
+                            1. NAND = NOT of AND.
+                            2. 1 AND 1 = 1.
+                            3. NOT 1 = 0.
+                            4. NAND is 0 only on the pair 1,1. Any 0 in the inputs makes NAND 1.
+                            """),
             MockQuestion(prompt: "S=ACSL WDTPD. ACSL paper S[2:6] (inclusive end)?", answer: "SL WD",
-                         derivation: "Indices 2 through 6: S L space W D. Python S[2:6] omits D."),
+                         derivation: """
+                            1. Write the string and number from 0 (this app’s Contest 4 habit, matching the wiki sample “SL WD”):
+                               idx  0 1 2 3 4 5 6 7 8 9
+                               S    A C S L   W D T P D
+                               (index 4 is a space)
+                            2. Paper S[2:6] keeps BOTH ends: indices 2,3,4,5,6.
+                            3. Those characters: S, L, space, W, D → “SL WD”.
+                            4. Python S[2:6] stops BEFORE 6: S, L, space, W → “SL W” (no D). That is the contest trap.
+                            """),
             MockQuestion(prompt: "a=BANANAS reversed to t. How many j with a[j]==t[j]?", answer: "5",
-                         derivation: "SANANAB vs BANANAS match at j=1 through 5.")
+                         derivation: """
+                            1. a = B A N A N A S. Reverse t = S A N A N A B.
+                            2. Line them up (1-based j=1..7):
+                               j  1 2 3 4 5 6 7
+                               a  B A N A N A S
+                               t  S A N A N A B
+                            3. Equal?  no yes yes yes yes yes no
+                            4. Matches at j=2,3,4,5,6 → five positions. Answer 5.
+                            """)
         ])
     ]
 }
